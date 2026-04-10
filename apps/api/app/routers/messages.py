@@ -131,11 +131,9 @@ async def send_message(
         from app.models.audit import NotificationQueue
         db.add(NotificationQueue(
             id=new_uuid(),
-            company_id=current_user.company_id,
-            target_user_id=None,
+            recipient_id="admin",
             channel="push",
-            title="Q&A 에스컬레이션",
-            body=f"스레드 {thread_id}에 처리 필요 메시지가 있습니다.",
+            payload={"title": "Q&A 에스컬레이션", "body": f"스레드 {thread_id}에 처리 필요 메시지가 있습니다."},
         ))
 
     await db.commit()
@@ -161,11 +159,9 @@ async def escalate_message(
     from app.models.audit import NotificationQueue
     db.add(NotificationQueue(
         id=new_uuid(),
-        company_id=current_user.company_id,
-        target_user_id=None,  # 관리자 전체 대상
+        recipient_id="admin",
         channel="push",
-        title="에스컬레이션 알림",
-        body=f"메시지 {message_id}가 에스컬레이션되었습니다.",
+        payload={"title": "에스컬레이션 알림", "body": f"메시지 {message_id}가 에스컬레이션되었습니다."},
     ))
     await write_audit(
         db,

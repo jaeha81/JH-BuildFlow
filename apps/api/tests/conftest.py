@@ -46,11 +46,16 @@ async def client(db_session: AsyncSession):
 
     app.dependency_overrides[get_db] = override_get_db
 
+    # 테스트 환경에서 rate limit 비활성화
+    from app.core.limiter import limiter
+    limiter.enabled = False
+
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
     ) as ac:
         yield ac
 
+    limiter.enabled = True
     app.dependency_overrides.clear()
 
 
