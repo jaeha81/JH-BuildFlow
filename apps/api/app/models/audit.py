@@ -70,4 +70,7 @@ class VendorScoreSnapshot(Base, TimestampMixin):
     complaint_count: Mapped[int] = mapped_column(default=0, nullable=False)
     settlement_total: Mapped[float | None] = mapped_column(nullable=True)
 
+    score: Mapped[float | None] = mapped_column(nullable=True)  # 최종 가중합 점수 (0~1)
+    quality_score: Mapped[float | None] = mapped_column(nullable=True)
+
     vendor: Mapped["Vendor"] = relationship(back_populates="score_snapshots")  # noqa: F821

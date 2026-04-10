@@ -15,6 +15,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/bid-requests",  label: "발주 관리", icon: "◈", accent: "#FF9F43" },
   { to: "/settlements",   label: "정산 관리", icon: "₩", accent: "#FF6B6B" },
   { to: "/agent-monitor", label: "에이전트",  icon: "◑", accent: "#A78BFA" },
+  { to: "/analytics",       label: "분석",      icon: "◉", accent: "#FFE566" },
   { to: "/settings/folder", label: "폴더 설정", icon: "◎" },
 ];
 

@@ -14,6 +14,7 @@ import { QuoteReviewPage } from "./pages/QuoteReviewPage";
 import { SettlementsPage } from "./pages/SettlementsPage";
 import { SettlementDetailPage } from "./pages/SettlementDetailPage";
 import { SettlementCalendarPage } from "./pages/SettlementCalendarPage";
+import { AnalyticsPage } from "./pages/AnalyticsPage";
 
 export function App() {
   return (
@@ -35,6 +36,7 @@ export function App() {
           <Route path="/settlements" element={<SettlementsPage />} />
           <Route path="/settlements/calendar" element={<SettlementCalendarPage />} />
           <Route path="/settlements/:id" element={<SettlementDetailPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

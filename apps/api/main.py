@@ -1,3 +1,7 @@
+from contextlib import asynccontextmanager
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -13,11 +17,47 @@ from app.routers.analytics import router as analytics_router
 from app.routers.agent_sync import router as agent_router
 from app.routers.bid_management import router as bid_management_router
 
+scheduler = AsyncIOScheduler()
+
+
+async def _monthly_snapshot_job() -> None:
+    """매월 1일 02:00 전체 협력사 스냅샷 생성."""
+    try:
+        from app.core.database import AsyncSessionLocal
+        from app.services.vendor_score import snapshot_all_vendors
+        from sqlalchemy import select
+        from app.models.company import Company
+
+        async with AsyncSessionLocal() as db:
+            result = await db.execute(select(Company.id))
+            company_ids = list(result.scalars())
+            for company_id in company_ids:
+                count = await snapshot_all_vendors(company_id, db)
+                print(f"[Scheduler] company={company_id} snapshots={count}")
+    except Exception as exc:
+        print(f"[Scheduler] 스냅샷 오류: {exc}")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 매월 1일 02:00 스냅샷
+    scheduler.add_job(
+        _monthly_snapshot_job,
+        CronTrigger(day=1, hour=2, minute=0),
+        id="monthly_vendor_snapshot",
+        replace_existing=True,
+    )
+    scheduler.start()
+    yield
+    scheduler.shutdown(wait=False)
+
+
 app = FastAPI(
     title="Interior Contractor Platform API",
     version="0.2.0",
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
