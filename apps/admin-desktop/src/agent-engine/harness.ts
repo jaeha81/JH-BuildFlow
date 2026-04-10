@@ -205,6 +205,22 @@ export class Harness {
     return { ...this.config };
   }
 
+  getStatus(): import("./connector/harness-connector").HarnessStatus {
+    const state = this.stateStore.getState();
+    return {
+      waveRunning: this.waveRunning,
+      agents: Object.fromEntries(
+        Object.entries(state.agents).map(([name, a]) => [
+          name,
+          { status: a.status, currentFile: a.currentFile ?? undefined },
+        ])
+      ) as import("./connector/harness-connector").HarnessStatus["agents"],
+      pendingCount: this.pendingFiles.length,
+      lastWaveId: state.wave.waveId || undefined,
+      lastWaveStatus: state.wave.status === "idle" ? undefined : state.wave.status,
+    };
+  }
+
   reloadConfig(): void {
     this.config = loadConfig(this.configPath);
     this.scanner.updateConfig({

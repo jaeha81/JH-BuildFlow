@@ -17,13 +17,16 @@ from app.schemas.vendors import VendorCreate, VendorResponse, VendorScoreRespons
 router = APIRouter(prefix="/vendors", tags=["vendors"])
 
 
+ADMIN_ROLES = ("super_admin", "sub_admin", "site_manager", "accounting")
+
+
 @router.get("", response_model=list[VendorResponse])
 async def list_vendors(
     trade_type: str | None = None,
     region: str | None = None,
     skip: int = 0,
     limit: int = 50,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_roles(*ADMIN_ROLES)),  # vendor role 차단
     db: AsyncSession = Depends(get_db),
 ) -> list[VendorResponse]:
     q = select(Vendor).where(
@@ -102,6 +105,9 @@ async def update_vendor(
     db: AsyncSession = Depends(get_db),
 ) -> VendorResponse:
     vendor = await _get_vendor_or_404(db, vendor_id, current_user.company_id)
+    # SECURITY: vendor 역할은 이메일이 일치하는 자신의 업체만 수정 가능
+    if current_user.role == "vendor" and vendor.email != current_user.email:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="자신의 업체 정보만 수정할 수 있습니다.")
     before = VendorResponse.model_validate(vendor).model_dump()
     for field, val in body.model_dump(exclude_none=True).items():
         setattr(vendor, field, val)
