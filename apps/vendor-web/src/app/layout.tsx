@@ -13,7 +13,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      {/* 네오브루탈리즘 전역 배경: 따뜻한 오프화이트 */}
+      <body className="bg-[#F5F0E8] text-black min-h-screen">{children}</body>
     </html>
   );
 }

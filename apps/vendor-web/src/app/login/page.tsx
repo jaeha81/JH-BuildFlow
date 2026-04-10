@@ -1,11 +1,10 @@
 "use client";
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authApi, ApiError } from "@/lib/api";
 import { saveVendorTokens, isVendorLoggedIn } from "@/lib/auth";
 import { Button, Input, ErrorAlert } from "@/components/ui";
-import { useEffect } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,25 +33,60 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#F5F0E8] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">협력사 포털</h1>
-          <p className="text-sm text-gray-500 mt-1">로그인하여 발주 현황을 확인하세요</p>
+
+        {/* 헤더 */}
+        <div className="mb-8">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 bg-[#5B8DEF] border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-center">
+              <span className="text-xs font-black text-white">JH</span>
+            </div>
+            <span className="font-black text-black uppercase text-sm tracking-wide">BuildFlow</span>
+          </div>
+          <h1 className="text-3xl font-black text-black leading-tight">
+            협력사<br />
+            <span className="text-[#5B8DEF]">포털 로그인</span>
+          </h1>
+          <div className="w-12 h-1 bg-black mt-3" />
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-6 space-y-4 shadow-sm">
-          <Input label="이메일" type="email" required value={email}
-            onChange={(e) => setEmail(e.target.value)} placeholder="vendor@example.com" autoFocus />
-          <Input label="비밀번호" type="password" required value={password}
-            onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+        {/* 폼 카드 */}
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white border-2 border-black p-6 space-y-4 shadow-[6px_6px_0px_#000]"
+        >
+          <Input
+            label="이메일"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="vendor@example.com"
+            autoFocus
+          />
+          <Input
+            label="비밀번호"
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+          />
           {error && <ErrorAlert message={error} />}
-          <Button type="submit" disabled={loading} className="w-full">{loading ? "로그인 중..." : "로그인"}</Button>
+          <Button type="submit" disabled={loading} className="w-full justify-center">
+            {loading ? "로그인 중..." : "로그인 →"}
+          </Button>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-4">
-          초대 링크로 가입하셨나요?{" "}
-          <Link href="/join" className="text-blue-600 hover:underline">신규 가입</Link>
+        <p className="text-sm font-bold text-black mt-4">
+          신규 협력사이신가요?{" "}
+          <Link
+            href="/join"
+            className="text-[#5B8DEF] underline decoration-2 decoration-black underline-offset-2 hover:bg-[#5B8DEF] hover:text-white hover:no-underline px-1 transition-colors"
+          >
+            가입하기
+          </Link>
         </p>
       </div>
     </div>

@@ -1,14 +1,25 @@
 import React from "react";
 
-// ── Badge ────────────────────────────────────────────────
+/* ────────────────────────────────────────────────────────────────
+ * JH BuildFlow — Admin Desktop UI Kit (Dark Neo-Brutalism)
+ *
+ * 원칙 (다크 버전):
+ *  ① 2px solid #fff 또는 컬러 테두리
+ *  ② 4px 4px 0 rgba(255,255,255,0.25) 하드 그림자
+ *  ③ hover = translate(+2,+2) + 그림자 축소
+ *  ④ 배경 #0F1117 (deep dark), 카드 #1A1D27
+ *  ⑤ 강조 원색 그대로 유지 (블루, 옐로, 레드)
+ * ──────────────────────────────────────────────────────────────── */
+
+// ─── Badge ─────────────────────────────────────────────────────
 type BadgeVariant = "default" | "success" | "warning" | "error" | "info" | "idle";
-const BADGE_CLASSES: Record<BadgeVariant, string> = {
-  default: "bg-gray-700 text-gray-300",
-  success: "bg-green-900 text-green-300",
-  warning: "bg-yellow-900 text-yellow-300",
-  error: "bg-red-900 text-red-300",
-  info: "bg-blue-900 text-blue-300",
-  idle: "bg-gray-800 text-gray-400",
+const BADGE: Record<BadgeVariant, string> = {
+  default: "bg-[#1A1D27] text-gray-300 border-gray-500",
+  success: "bg-[#4ADE80] text-black border-black",
+  warning: "bg-[#FFE566] text-black border-black",
+  error:   "bg-[#FF6B6B] text-white border-black",
+  info:    "bg-[#5B8DEF] text-white border-black",
+  idle:    "bg-[#1A1D27] text-gray-500 border-gray-700",
 };
 
 export function Badge({
@@ -19,13 +30,15 @@ export function Badge({
   variant?: BadgeVariant;
 }) {
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${BADGE_CLASSES[variant]}`}>
+    <span
+      className={`inline-flex items-center px-2 py-0.5 text-xs font-bold border-2 ${BADGE[variant]}`}
+    >
       {children}
     </span>
   );
 }
 
-// ── StatusCard ───────────────────────────────────────────
+// ─── StatusCard ────────────────────────────────────────────────
 export function StatusCard({
   title,
   value,
@@ -38,15 +51,25 @@ export function StatusCard({
   accent?: boolean;
 }) {
   return (
-    <div className={`rounded-xl border p-5 space-y-1 ${accent ? "border-blue-700 bg-blue-950/40" : "border-gray-800 bg-gray-900"}`}>
-      <p className="text-xs text-gray-500">{title}</p>
-      <p className={`text-2xl font-semibold ${accent ? "text-blue-300" : "text-white"}`}>{value}</p>
-      {sub && <p className="text-xs text-gray-600">{sub}</p>}
+    <div
+      className={`
+        border-2 p-5 space-y-1
+        shadow-[4px_4px_0px_rgba(255,255,255,0.15)]
+        ${accent
+          ? "bg-[#5B8DEF] border-white"
+          : "bg-[#1A1D27] border-gray-600"}
+      `}
+    >
+      <p className={`text-xs font-bold uppercase tracking-wide ${accent ? "text-blue-100" : "text-gray-500"}`}>
+        {title}
+      </p>
+      <p className={`text-2xl font-black ${accent ? "text-white" : "text-white"}`}>{value}</p>
+      {sub && <p className={`text-xs ${accent ? "text-blue-200" : "text-gray-600"}`}>{sub}</p>}
     </div>
   );
 }
 
-// ── PageHeader ───────────────────────────────────────────
+// ─── PageHeader ────────────────────────────────────────────────
 export function PageHeader({
   title,
   actions,
@@ -55,20 +78,20 @@ export function PageHeader({
   actions?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between px-6 py-5 border-b border-gray-800">
-      <h1 className="text-lg font-semibold text-white">{title}</h1>
+    <div className="flex items-center justify-between px-6 py-5 border-b-2 border-white/10">
+      <h1 className="text-lg font-black text-white tracking-tight">{title}</h1>
       {actions && <div className="flex items-center gap-2">{actions}</div>}
     </div>
   );
 }
 
-// ── Button ───────────────────────────────────────────────
+// ─── Button ────────────────────────────────────────────────────
 type BtnVariant = "primary" | "secondary" | "danger" | "ghost";
-const BTN_CLASSES: Record<BtnVariant, string> = {
-  primary: "bg-blue-600 hover:bg-blue-700 text-white",
-  secondary: "bg-gray-700 hover:bg-gray-600 text-white",
-  danger: "bg-red-700 hover:bg-red-600 text-white",
-  ghost: "text-gray-400 hover:text-white hover:bg-gray-800",
+const BTN: Record<BtnVariant, string> = {
+  primary:   "bg-[#5B8DEF] text-white border-white/60 hover:bg-[#4a7de0]",
+  secondary: "bg-[#FFE566] text-black border-black hover:bg-[#f5d84f]",
+  danger:    "bg-[#FF6B6B] text-white border-white/60 hover:bg-[#f05555]",
+  ghost:     "bg-transparent text-gray-400 border-gray-600 hover:text-white hover:border-white",
 };
 
 export function Button({
@@ -91,14 +114,21 @@ export function Button({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${BTN_CLASSES[variant]} ${className}`}
+      className={`
+        px-4 py-2 text-sm font-bold border-2 transition-all
+        shadow-[4px_4px_0px_rgba(255,255,255,0.2)]
+        hover:shadow-[2px_2px_0px_rgba(255,255,255,0.2)] hover:translate-x-[2px] hover:translate-y-[2px]
+        active:shadow-none active:translate-x-[4px] active:translate-y-[4px]
+        disabled:opacity-30 disabled:cursor-not-allowed disabled:shadow-none
+        ${BTN[variant]} ${className}
+      `}
     >
       {children}
     </button>
   );
 }
 
-// ── Input ────────────────────────────────────────────────
+// ─── Input ─────────────────────────────────────────────────────
 export function Input({
   label,
   required,
@@ -112,24 +142,28 @@ export function Input({
   return (
     <div className="space-y-1">
       {label && (
-        <label className="text-xs text-gray-400">
+        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wide">
           {label}
-          {required && <span className="text-red-400 ml-0.5">*</span>}
+          {required && <span className="text-[#FF6B6B] ml-0.5">*</span>}
         </label>
       )}
       <input
         {...props}
         required={required}
-        className={`w-full bg-gray-800 border rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600 ${
-          error ? "border-red-600" : "border-gray-700"
-        } ${props.className ?? ""}`}
+        className={`
+          w-full bg-[#0F1117] border-2 px-3 py-2 text-sm font-medium text-white
+          placeholder-gray-600 focus:outline-none
+          focus:border-[#5B8DEF] focus:shadow-[4px_4px_0px_#5B8DEF]
+          ${error ? "border-[#FF6B6B]" : "border-gray-600"}
+          ${props.className ?? ""}
+        `}
       />
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && <p className="text-xs font-bold text-[#FF6B6B]">{error}</p>}
     </div>
   );
 }
 
-// ── Select ───────────────────────────────────────────────
+// ─── Select ────────────────────────────────────────────────────
 export function Select({
   label,
   required,
@@ -144,64 +178,28 @@ export function Select({
   return (
     <div className="space-y-1">
       {label && (
-        <label className="text-xs text-gray-400">
+        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wide">
           {label}
-          {required && <span className="text-red-400 ml-0.5">*</span>}
+          {required && <span className="text-[#FF6B6B] ml-0.5">*</span>}
         </label>
       )}
       <select
         {...props}
         required={required}
-        className={`w-full bg-gray-800 border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-600 ${
-          error ? "border-red-600" : "border-gray-700"
-        }`}
+        className={`
+          w-full bg-[#0F1117] border-2 px-3 py-2 text-sm font-medium text-white
+          focus:outline-none focus:border-[#5B8DEF]
+          ${error ? "border-[#FF6B6B]" : "border-gray-600"}
+        `}
       >
         {children}
       </select>
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && <p className="text-xs font-bold text-[#FF6B6B]">{error}</p>}
     </div>
   );
 }
 
-// ── LoadingSpinner ───────────────────────────────────────
-export function LoadingSpinner({ text = "로딩 중..." }: { text?: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-3 py-16">
-      <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-      <p className="text-sm text-gray-500">{text}</p>
-    </div>
-  );
-}
-
-// ── EmptyState ───────────────────────────────────────────
-export function EmptyState({
-  title,
-  description,
-  action,
-}: {
-  title: string;
-  description?: string;
-  action?: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
-      <p className="text-gray-500 font-medium">{title}</p>
-      {description && <p className="text-xs text-gray-600 max-w-xs">{description}</p>}
-      {action}
-    </div>
-  );
-}
-
-// ── ErrorAlert ───────────────────────────────────────────
-export function ErrorAlert({ message }: { message: string }) {
-  return (
-    <div className="mx-6 mt-4 px-4 py-3 bg-red-950 border border-red-800 rounded-lg text-sm text-red-300">
-      {message}
-    </div>
-  );
-}
-
-// ── Textarea ─────────────────────────────────────────────
+// ─── Textarea ──────────────────────────────────────────────────
 export function Textarea({
   label,
   required,
@@ -215,20 +213,64 @@ export function Textarea({
   return (
     <div className="space-y-1">
       {label && (
-        <label className="text-xs text-gray-400">
+        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wide">
           {label}
-          {required && <span className="text-red-400 ml-0.5">*</span>}
+          {required && <span className="text-[#FF6B6B] ml-0.5">*</span>}
         </label>
       )}
       <textarea
         {...props}
         required={required}
         rows={props.rows ?? 3}
-        className={`w-full bg-gray-800 border rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none ${
-          error ? "border-red-600" : "border-gray-700"
-        }`}
+        className={`
+          w-full bg-[#0F1117] border-2 px-3 py-2 text-sm font-medium text-white
+          placeholder-gray-600 focus:outline-none resize-none
+          focus:border-[#5B8DEF]
+          ${error ? "border-[#FF6B6B]" : "border-gray-600"}
+        `}
       />
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && <p className="text-xs font-bold text-[#FF6B6B]">{error}</p>}
+    </div>
+  );
+}
+
+// ─── LoadingSpinner ─────────────────────────────────────────────
+export function LoadingSpinner({ text = "로딩 중..." }: { text?: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-4 py-16">
+      <div className="w-10 h-10 border-4 border-white bg-[#5B8DEF] animate-spin shadow-[3px_3px_0px_rgba(255,255,255,0.3)]" />
+      <p className="text-sm font-bold text-gray-400 uppercase tracking-wide">{text}</p>
+    </div>
+  );
+}
+
+// ─── EmptyState ────────────────────────────────────────────────
+export function EmptyState({
+  title,
+  description,
+  action,
+}: {
+  title: string;
+  description?: string;
+  action?: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
+      <div className="w-16 h-1 bg-white/20" />
+      <p className="text-base font-black text-white">{title}</p>
+      {description && (
+        <p className="text-sm text-gray-500 max-w-xs">{description}</p>
+      )}
+      {action}
+    </div>
+  );
+}
+
+// ─── ErrorAlert ────────────────────────────────────────────────
+export function ErrorAlert({ message }: { message: string }) {
+  return (
+    <div className="mx-6 mt-4 px-4 py-3 bg-[#FF6B6B] border-2 border-white/60 text-sm font-bold text-white shadow-[4px_4px_0px_rgba(255,255,255,0.2)]">
+      ⚠ {message}
     </div>
   );
 }

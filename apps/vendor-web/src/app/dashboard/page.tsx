@@ -13,6 +13,12 @@ const STATUS_MAP: Record<string, { label: string; variant: "default" | "success"
   expired:  { label: "마감", variant: "error" },
 };
 
+const SUMMARY_CARDS = [
+  { key: "total",    label: "전체 발주", color: "bg-[#5B8DEF]", textColor: "text-white" },
+  { key: "pending",  label: "응답 대기", color: "bg-[#FFE566]", textColor: "text-black" },
+  { key: "accepted", label: "참여 중",   color: "bg-[#4ADE80]", textColor: "text-black" },
+];
+
 export default function DashboardPage() {
   const [bids, setBids] = useState<BidRequest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,22 +31,26 @@ export default function DashboardPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const pending = bids.filter((b) => b.response_status === "pending").length;
+  const counts = {
+    total:    bids.length,
+    pending:  bids.filter((b) => b.response_status === "pending").length,
+    accepted: bids.filter((b) => b.response_status === "accepted").length,
+  };
 
   return (
     <>
       <VendorNav />
       <main className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-        {/* 요약 */}
+
+        {/* 요약 카드 */}
         <div className="grid grid-cols-3 gap-4">
-          {[
-            { label: "전체 발주", value: bids.length },
-            { label: "응답 대기", value: pending },
-            { label: "참여 중", value: bids.filter((b) => b.response_status === "accepted").length },
-          ].map((card) => (
-            <div key={card.label} className="bg-white border border-gray-200 rounded-xl p-4">
-              <p className="text-xs text-gray-500">{card.label}</p>
-              <p className="text-2xl font-semibold text-gray-900 mt-1">{card.value}</p>
+          {SUMMARY_CARDS.map((card) => (
+            <div
+              key={card.key}
+              className={`${card.color} ${card.textColor} border-2 border-black p-4 shadow-[4px_4px_0px_#000]`}
+            >
+              <p className="text-xs font-bold uppercase tracking-wide opacity-80">{card.label}</p>
+              <p className="text-3xl font-black mt-1">{counts[card.key as keyof typeof counts]}</p>
             </div>
           ))}
         </div>
@@ -48,23 +58,38 @@ export default function DashboardPage() {
         {error && <ErrorAlert message={error} />}
 
         {/* 발주 목록 */}
-        <div className="bg-white border border-gray-200 rounded-xl">
-          <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-            <h2 className="font-medium text-gray-800">최근 발주</h2>
-            <Link href="/bid-requests" className="text-xs text-blue-600 hover:underline">전체 보기</Link>
+        <div className="border-2 border-black shadow-[4px_4px_0px_#000] bg-white">
+          {/* 헤더 */}
+          <div className="px-5 py-4 border-b-2 border-black flex items-center justify-between bg-[#1A1D27]">
+            <h2 className="font-black text-white uppercase tracking-wide text-sm">최근 발주</h2>
+            <Link
+              href="/bid-requests"
+              className="text-xs font-bold text-[#5B8DEF] border-2 border-[#5B8DEF] px-2 py-1
+                hover:bg-[#5B8DEF] hover:text-white transition-colors"
+            >
+              전체 보기 →
+            </Link>
           </div>
-          {loading ? <LoadingSpinner /> : bids.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-10">수신된 발주가 없습니다</p>
+
+          {loading ? (
+            <LoadingSpinner />
+          ) : bids.length === 0 ? (
+            <p className="text-sm font-bold text-gray-400 text-center py-10">수신된 발주가 없습니다</p>
           ) : (
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y-2 divide-black">
               {bids.slice(0, 5).map((b) => {
                 const st = STATUS_MAP[b.response_status] ?? { label: b.response_status, variant: "default" as const };
                 return (
-                  <Link key={b.id} href={`/bid-requests/${b.id}`}
-                    className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors">
+                  <Link
+                    key={b.id}
+                    href={`/bid-requests/${b.id}`}
+                    className="flex items-center justify-between px-5 py-3.5 hover:bg-[#F5F0E8] transition-colors"
+                  >
                     <div>
-                      <p className="text-sm font-medium text-gray-800">{b.trade_type ?? "공종 미정"}</p>
-                      <p className="text-xs text-gray-400">{b.deadline ? `마감: ${new Date(b.deadline).toLocaleDateString()}` : "마감일 없음"}</p>
+                      <p className="text-sm font-black text-black">{b.trade_type ?? "공종 미정"}</p>
+                      <p className="text-xs font-medium text-gray-500 mt-0.5">
+                        {b.deadline ? `마감: ${new Date(b.deadline).toLocaleDateString("ko-KR")}` : "마감일 없음"}
+                      </p>
                     </div>
                     <Badge variant={st.variant}>{st.label}</Badge>
                   </Link>
