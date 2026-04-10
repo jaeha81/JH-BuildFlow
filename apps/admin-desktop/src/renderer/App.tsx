@@ -10,6 +10,10 @@ import { VendorsPage } from "./pages/VendorsPage";
 import { VendorDetailPage } from "./pages/VendorDetailPage";
 import { AgentMonitorPage } from "./pages/AgentMonitorPage";
 import { FolderSettingsPage } from "./pages/FolderSettingsPage";
+import { QuoteReviewPage } from "./pages/QuoteReviewPage";
+import { SettlementsPage } from "./pages/SettlementsPage";
+import { SettlementDetailPage } from "./pages/SettlementDetailPage";
+import { SettlementCalendarPage } from "./pages/SettlementCalendarPage";
 
 export function App() {
   return (
@@ -27,6 +31,10 @@ export function App() {
           <Route path="/bid-requests" element={<Navigate to="/" replace />} />
           <Route path="/agent-monitor" element={<AgentMonitorPage />} />
           <Route path="/settings/folder" element={<FolderSettingsPage />} />
+          <Route path="/quotes/:id/review" element={<QuoteReviewPage />} />
+          <Route path="/settlements" element={<SettlementsPage />} />
+          <Route path="/settlements/calendar" element={<SettlementCalendarPage />} />
+          <Route path="/settlements/:id" element={<SettlementDetailPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

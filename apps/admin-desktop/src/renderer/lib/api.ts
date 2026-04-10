@@ -155,6 +155,35 @@ export const settlementsApi = {
   listPending: () => request<Settlement[]>("/settlements?status=requested"),
 };
 
+// ── Quotes ──────────────────────────────────────────────
+export type QuoteDetail = {
+  id: string;
+  vendor_id: string;
+  project_id: string;
+  bid_request_id: string;
+  file_url: string | null;
+  file_name: string | null;
+  parsed_total: number | null;
+  parse_status: string;
+  manual_review_required: boolean;
+  submission_type: string;
+  line_items_json?: Array<{ item_name: string; unit: string; quantity: number; unit_price: number; amount: number }>;
+};
+
+export const quotesApi = {
+  get: (id: string) => request<QuoteDetail>(`/quotes/${id}`),
+  normalize: (id: string, body: { line_items: unknown[]; parsed_total: number }) =>
+    request<QuoteDetail>(`/quotes/${id}/normalize`, { method: "PUT", body }),
+  manualQueue: () => request<QuoteDetail[]>("/quotes/manual-review-queue"),
+};
+
+// ── Generic admin API helper ────────────────────────────
+export const adminApi = {
+  get: <T>(path: string) => request<T>(path),
+  post: <T>(path: string, body: unknown) => request<T>(path, { method: "POST", body }),
+  put: <T>(path: string, body: unknown) => request<T>(path, { method: "PUT", body }),
+};
+
 // ── Health ──────────────────────────────────────────────
 export const healthApi = {
   check: () => request<{ status: string; timestamp: string }>("/health"),

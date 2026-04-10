@@ -12,6 +12,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/projects", label: "프로젝트", icon: "◫" },
   { to: "/vendors", label: "협력사", icon: "◻" },
   { to: "/bid-requests", label: "발주 관리", icon: "◈" },
+  { to: "/settlements", label: "정산 관리", icon: "₩" },
   { to: "/agent-monitor", label: "에이전트", icon: "◑" },
   { to: "/settings/folder", label: "폴더 설정", icon: "◎" },
 ];
