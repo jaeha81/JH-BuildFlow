@@ -1,6 +1,6 @@
 {
   "name": "@interior/admin-desktop",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "main": "dist/main/index.js",
   "scripts": {
@@ -8,13 +8,16 @@
     "dev:renderer": "vite",
     "dev:main": "tsc -p tsconfig.main.json --watch",
     "electron": "wait-on http://localhost:5173 && electron .",
+    "electron:dev": "concurrently \"npm run dev:renderer\" \"npm run dev:main\" \"npm run electron\"",
     "build": "tsc -p tsconfig.main.json && vite build",
-    "build:electron": "npm run build && electron-builder",
+    "electron:build": "npm run build && electron-builder --config electron-builder.yml --win",
+    "electron:build:portable": "npm run build && electron-builder --config electron-builder.yml --win --target portable",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@types/react-router-dom": "^5.3.3",
     "chokidar": "^3.6.0",
+    "electron-updater": "^6.2.1",
     "pdfjs-dist": "^4.2.67",
     "react-router-dom": "^6.30.3",
     "xlsx": "^0.18.5"
@@ -33,18 +36,5 @@
     "typescript": "^5.4.5",
     "vite": "^5.3.1",
     "wait-on": "^7.2.0"
-  },
-  "build": {
-    "appId": "com.jh.interior-admin",
-    "productName": "JH BuildFlow 관리자",
-    "directories": {
-      "output": "release"
-    },
-    "win": {
-      "target": [
-        "nsis",
-        "portable"
-      ]
-    }
   }
 }

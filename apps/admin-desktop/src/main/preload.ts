@@ -21,4 +21,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
   removeAllListeners: (channel: string) => {
     ipcRenderer.removeAllListeners(channel);
   },
+  // 자동 업데이트 IPC
+  onUpdateAvailable: (cb: (info: unknown) => void) =>
+    ipcRenderer.on("updater:update-available", (_e, info) => cb(info)),
+  onUpdateDownloaded: (cb: (info: unknown) => void) =>
+    ipcRenderer.on("updater:update-downloaded", (_e, info) => cb(info)),
+  onDownloadProgress: (cb: (p: unknown) => void) =>
+    ipcRenderer.on("updater:download-progress", (_e, p) => cb(p)),
+  installUpdate: () => ipcRenderer.invoke("updater:install"),
 });

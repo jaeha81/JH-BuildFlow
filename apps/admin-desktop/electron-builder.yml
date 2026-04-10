@@ -1,0 +1,54 @@
+# electron-builder 설정 — PROMPT-12
+# 화이트라벨: APP_PRODUCT_NAME 환경변수로 appId/productName 오버라이드 가능
+
+appId: "${env.APP_ID:-com.jh.contractor-platform}"
+productName: "${env.APP_PRODUCT_NAME:-JH BuildFlow 관리자}"
+
+# 빌드 입력/출력
+directories:
+  output: dist
+  buildResources: assets
+
+# 아이콘 (512x512 PNG → ICO 자동 변환)
+icon: assets/icon.png
+
+# 공통 파일 패턴
+files:
+  - "dist/main/**/*"
+  - "dist/renderer/**/*"
+  - "package.json"
+
+# 자동 업데이트 설정 (개발 단계: URL 없으면 조용히 실패)
+publish:
+  provider: generic
+  url: "${env.UPDATE_SERVER_URL:-}"
+
+# Windows 빌드
+win:
+  target:
+    - target: nsis
+      arch: x64
+    - target: portable
+      arch: x64
+  # 코드 서명: 개발 단계 비활성
+  # certificateFile: ${env.WIN_CERT_FILE}
+  # certificatePassword: ${env.WIN_CERT_PASSWORD}
+
+# NSIS 설치형
+nsis:
+  oneClick: false
+  allowDirChange: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  installerIcon: assets/icon.png
+  uninstallerIcon: assets/icon.png
+  shortcutName: "${env.APP_PRODUCT_NAME:-JH BuildFlow 관리자}"
+  installerHeaderIcon: assets/icon.png
+  license: ""
+
+# 포터블 (설치 없이 실행)
+portable:
+  artifactName: "portable.exe"
+
+# NSIS 출력 파일명
+artifactName: "setup.exe"
