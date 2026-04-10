@@ -60,37 +60,41 @@ export default function ProfilePage() {
     <>
       <VendorNav />
       <main className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-        <h1 className="text-lg font-semibold text-gray-900">내 정보</h1>
+        <h1 className="text-lg font-black text-black uppercase tracking-wide">내 정보</h1>
 
         {error && <ErrorAlert message={error} />}
+
         {success && (
-          <div className="bg-green-50 border border-green-100 rounded-xl p-3 text-sm text-green-700">저장되었습니다.</div>
+          <div className="px-4 py-3 bg-[#4ADE80] border-2 border-black text-sm font-black text-black shadow-[3px_3px_0px_#000]">
+            ✓ 저장되었습니다.
+          </div>
         )}
 
         {!loading && (
           <div className="space-y-5">
             {/* 업체명 */}
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1.5">업체명</label>
+              <label className="block text-xs font-black text-black uppercase tracking-wide mb-1.5">업체명</label>
               <input
                 value={form.company_name}
                 onChange={(e) => setForm((p) => ({ ...p, company_name: e.target.value }))}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border-2 border-black px-4 py-2.5 text-sm font-bold bg-white focus:outline-none focus:shadow-[4px_4px_0px_#000] transition-shadow"
               />
             </div>
 
             {/* 공종 */}
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-2">담당 공종</label>
+              <label className="block text-xs font-black text-black uppercase tracking-wide mb-2">담당 공종</label>
               <div className="flex flex-wrap gap-2">
                 {TRADE_TYPES.map((t) => (
                   <button
                     key={t}
                     onClick={() => toggleList("trade_types", t)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    className={`px-3 py-1.5 text-xs font-bold border-2 border-black transition-all
+                      hover:shadow-[2px_2px_0px_#000] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] ${
                       form.trade_types.includes(t)
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        ? "bg-[#5B8DEF] text-white shadow-[2px_2px_0px_#000]"
+                        : "bg-white text-black"
                     }`}
                   >
                     {t}
@@ -101,16 +105,17 @@ export default function ProfilePage() {
 
             {/* 지역 */}
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-2">활동 지역</label>
+              <label className="block text-xs font-black text-black uppercase tracking-wide mb-2">활동 지역</label>
               <div className="flex flex-wrap gap-2">
                 {REGIONS.map((r) => (
                   <button
                     key={r}
                     onClick={() => toggleList("regions", r)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    className={`px-3 py-1.5 text-xs font-bold border-2 border-black transition-all
+                      hover:shadow-[2px_2px_0px_#000] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] ${
                       form.regions.includes(r)
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        ? "bg-[#FFE566] text-black shadow-[2px_2px_0px_#000]"
+                        : "bg-white text-black"
                     }`}
                   >
                     {r}
@@ -122,7 +127,10 @@ export default function ProfilePage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full py-3 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              className="w-full py-3 bg-black text-white text-sm font-black uppercase tracking-wide border-2 border-black
+                shadow-[4px_4px_0px_rgba(0,0,0,0.3)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.3)] hover:translate-x-[2px] hover:translate-y-[2px]
+                active:shadow-none active:translate-x-[4px] active:translate-y-[4px]
+                disabled:opacity-50 transition-all"
             >
               {saving ? "저장 중..." : "변경사항 저장"}
             </button>

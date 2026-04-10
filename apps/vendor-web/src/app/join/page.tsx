@@ -66,25 +66,40 @@ export default function JoinPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#F5F0E8] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        <div className="text-center mb-6">
-          <h1 className="text-xl font-bold text-gray-900">협력사 신규 가입</h1>
+        {/* 헤더 */}
+        <div className="mb-6">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 bg-[#5B8DEF] border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-center">
+              <span className="text-xs font-black text-white">JH</span>
+            </div>
+            <span className="font-black text-black uppercase text-sm tracking-wide">BuildFlow</span>
+          </div>
+          <h1 className="text-3xl font-black text-black leading-tight">
+            협력사<br />
+            <span className="text-[#5B8DEF]">신규 가입</span>
+          </h1>
+          <div className="w-12 h-1 bg-black mt-3" />
+
           {step < 5 && (
-            <div className="flex items-center justify-center gap-1.5 mt-4">
+            <div className="flex items-center gap-1.5 mt-4">
               {Array.from({ length: TOTAL_STEPS - 1 }, (_, i) => (
-                <div key={i} className={`h-1.5 w-8 rounded-full transition-colors ${i + 1 <= step ? "bg-blue-600" : "bg-gray-200"}`} />
+                <div
+                  key={i}
+                  className={`h-2 w-8 border-2 border-black transition-colors ${i + 1 <= step ? "bg-[#5B8DEF]" : "bg-white"}`}
+                />
               ))}
-              <span className="text-xs text-gray-400 ml-2">{step}/4단계</span>
+              <span className="text-xs font-black text-gray-500 ml-2">{step}/4단계</span>
             </div>
           )}
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-5">
+        <div className="bg-white border-2 border-black p-6 shadow-[6px_6px_0px_#000] space-y-5">
           {/* Step 1: 기본정보 */}
           {step === 1 && (
             <>
-              <h2 className="font-medium text-gray-800">기본 정보</h2>
+              <h2 className="font-black text-black uppercase tracking-wide text-sm">기본 정보</h2>
               <Input label="업체명" required value={form.company_name} onChange={(e) => update("company_name", e.target.value)} placeholder="우진목공" />
               <Input label="대표자명" value={form.representative_name} onChange={(e) => update("representative_name", e.target.value)} placeholder="홍길동" />
               <Input label="이메일" required type="email" value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="contact@example.com" />
@@ -96,29 +111,36 @@ export default function JoinPage() {
           {/* Step 2: 사업자 정보 */}
           {step === 2 && (
             <>
-              <h2 className="font-medium text-gray-800">사업자 정보</h2>
+              <h2 className="font-black text-black uppercase tracking-wide text-sm">사업자 정보</h2>
               <Input label="사업자등록번호" value={form.business_number} onChange={(e) => update("business_number", e.target.value)} placeholder="123-45-67890" />
-              <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center">
-                <p className="text-sm text-gray-400">사업자등록증 업로드 (선택)</p>
-                <p className="text-xs text-gray-300 mt-1">PDF, JPG, PNG — 최대 10MB</p>
+              <div className="border-2 border-black border-dashed p-6 text-center">
+                <p className="text-sm font-bold text-gray-500">사업자등록증 업로드 (선택)</p>
+                <p className="text-xs font-medium text-gray-400 mt-1">PDF, JPG, PNG — 최대 10MB</p>
                 <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="hidden" id="biz-cert" />
-                <label htmlFor="biz-cert" className="mt-3 inline-block px-4 py-2 bg-gray-100 rounded-lg text-xs text-gray-600 cursor-pointer hover:bg-gray-200">
+                <label
+                  htmlFor="biz-cert"
+                  className="mt-3 inline-block px-4 py-2 bg-white border-2 border-black text-xs font-black cursor-pointer
+                    shadow-[3px_3px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                >
                   파일 선택
                 </label>
               </div>
-              <p className="text-xs text-gray-400">* 사업자등록증은 나중에 제출해도 됩니다.</p>
+              <p className="text-xs font-bold text-gray-400">* 사업자등록증은 나중에 제출해도 됩니다.</p>
             </>
           )}
 
           {/* Step 3: 공종 선택 */}
           {step === 3 && (
             <>
-              <h2 className="font-medium text-gray-800">공종 선택 <span className="text-red-500">*</span></h2>
-              <p className="text-xs text-gray-500">서비스 가능한 공종을 모두 선택하세요 (복수 선택 가능)</p>
+              <h2 className="font-black text-black uppercase tracking-wide text-sm">공종 선택 <span className="text-[#FF6B6B]">*</span></h2>
+              <p className="text-xs font-bold text-gray-500">서비스 가능한 공종을 모두 선택하세요</p>
               <div className="flex flex-wrap gap-2">
                 {TRADE_TYPES.map((t) => (
                   <button key={t} type="button" onClick={() => toggleArr("trade_types", t)}
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${form.trade_types.includes(t) ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
+                    className={`px-3 py-1.5 text-sm font-bold border-2 border-black transition-all
+                      hover:shadow-[2px_2px_0px_#000] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] ${
+                      form.trade_types.includes(t) ? "bg-[#5B8DEF] text-white shadow-[2px_2px_0px_#000]" : "bg-white text-black"
+                    }`}>
                     {t}
                   </button>
                 ))}
@@ -129,11 +151,14 @@ export default function JoinPage() {
           {/* Step 4: 지역 선택 */}
           {step === 4 && (
             <>
-              <h2 className="font-medium text-gray-800">서비스 가능 지역 <span className="text-red-500">*</span></h2>
+              <h2 className="font-black text-black uppercase tracking-wide text-sm">서비스 가능 지역 <span className="text-[#FF6B6B]">*</span></h2>
               <div className="flex flex-wrap gap-2">
                 {REGIONS.map((r) => (
                   <button key={r} type="button" onClick={() => toggleArr("regions", r)}
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${form.regions.includes(r) ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
+                    className={`px-3 py-1.5 text-sm font-bold border-2 border-black transition-all
+                      hover:shadow-[2px_2px_0px_#000] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] ${
+                      form.regions.includes(r) ? "bg-[#FFE566] text-black shadow-[2px_2px_0px_#000]" : "bg-white text-black"
+                    }`}>
                     {r}
                   </button>
                 ))}
@@ -144,11 +169,11 @@ export default function JoinPage() {
           {/* Step 5: 완료 */}
           {step === 5 && (
             <div className="text-center space-y-4 py-4">
-              <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-2xl">✓</span>
+              <div className="w-14 h-14 bg-[#4ADE80] border-2 border-black shadow-[4px_4px_0px_#000] flex items-center justify-center mx-auto">
+                <span className="text-2xl font-black">✓</span>
               </div>
-              <h2 className="font-semibold text-gray-800">가입이 완료되었습니다!</h2>
-              <p className="text-sm text-gray-500">관리자 승인 후 로그인하실 수 있습니다.</p>
+              <h2 className="font-black text-black uppercase tracking-wide">가입이 완료되었습니다!</h2>
+              <p className="text-sm font-bold text-gray-500">관리자 승인 후 로그인하실 수 있습니다.</p>
               <Button onClick={() => router.push("/login")}>로그인하기</Button>
             </div>
           )}

@@ -32,26 +32,26 @@ export function VendorsPage() {
         />
       ) : (
         <div className="p-6">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+          <div className="bg-[#1A1D27] border-2 border-white/10 shadow-[4px_4px_0px_rgba(255,255,255,0.05)] overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-800 text-xs text-gray-500">
-                  <th className="text-left px-4 py-3">업체명</th>
-                  <th className="text-left px-4 py-3">대표자</th>
-                  <th className="text-left px-4 py-3">공종</th>
-                  <th className="text-left px-4 py-3">지역</th>
-                  <th className="text-left px-4 py-3">평점</th>
-                  <th className="text-left px-4 py-3">상태</th>
+                <tr className="border-b-2 border-white/10 text-xs text-gray-500 uppercase tracking-wide">
+                  <th className="text-left px-4 py-3 font-black">업체명</th>
+                  <th className="text-left px-4 py-3 font-black">대표자</th>
+                  <th className="text-left px-4 py-3 font-black">공종</th>
+                  <th className="text-left px-4 py-3 font-black">지역</th>
+                  <th className="text-left px-4 py-3 font-black">평점</th>
+                  <th className="text-left px-4 py-3 font-black">상태</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800">
+              <tbody className="divide-y-2 divide-white/5">
                 {vendors.map((v) => (
                   <tr
                     key={v.id}
                     onClick={() => navigate(`/vendors/${v.id}`)}
-                    className="hover:bg-gray-800 cursor-pointer transition-colors"
+                    className="hover:bg-white/5 cursor-pointer transition-colors"
                   >
-                    <td className="px-4 py-3 text-white">{v.company_name}</td>
+                    <td className="px-4 py-3 text-white font-bold">{v.company_name}</td>
                     <td className="px-4 py-3 text-gray-400">{v.representative_name ?? "—"}</td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-1">
@@ -61,7 +61,7 @@ export function VendorsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-gray-400">{v.regions.join(", ") || "—"}</td>
-                    <td className="px-4 py-3 text-gray-400">
+                    <td className="px-4 py-3 text-gray-400 font-bold">
                       {v.rating != null ? `★ ${v.rating.toFixed(1)}` : "—"}
                     </td>
                     <td className="px-4 py-3">

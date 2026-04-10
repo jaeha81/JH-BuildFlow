@@ -33,15 +33,18 @@ export function FolderSettingsPage() {
       <PageHeader title="로컬 폴더 설정" />
 
       <div className="p-6 max-w-xl space-y-6">
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-          <h2 className="text-sm font-medium text-gray-300">감시 루트 폴더</h2>
+        <div className="bg-[#1A1D27] border-2 border-white/10 p-5 shadow-[4px_4px_0px_rgba(255,255,255,0.05)] space-y-4">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-2 h-2 bg-[#5B8DEF] border border-white" />
+            <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest">감시 루트 폴더</h2>
+          </div>
           <Input
             label="watchRoot 경로"
             value={watchRoot}
             onChange={(e) => setWatchRoot(e.target.value)}
             placeholder="C:/Users/user/JH-BuildFlow-Watch"
           />
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 font-medium">
             이 경로 아래에 아래 표준 폴더 구조를 생성하면 SCANNER 에이전트가 자동으로 파일을 감지합니다.
           </p>
 
@@ -50,12 +53,15 @@ export function FolderSettingsPage() {
           </Button>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-          <h2 className="text-sm font-medium text-gray-300 mb-3">표준 폴더 구조</h2>
-          <div className="space-y-1">
+        <div className="bg-[#1A1D27] border-2 border-white/10 p-5 shadow-[4px_4px_0px_rgba(255,255,255,0.05)]">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-2 h-2 bg-[#4ADE80] border border-white" />
+            <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest">표준 폴더 구조</h2>
+          </div>
+          <div className="space-y-1.5">
             {STANDARD_FOLDERS.map((folder) => (
-              <div key={folder} className="flex items-center gap-2 text-xs text-gray-400">
-                <span className="text-gray-600">📁</span>
+              <div key={folder} className="flex items-center gap-2 text-xs font-bold text-gray-400">
+                <span className="w-2 h-2 bg-[#5B8DEF]/40 border border-[#5B8DEF]/60 shrink-0" />
                 {folder}
               </div>
             ))}

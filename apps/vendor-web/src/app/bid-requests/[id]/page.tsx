@@ -73,48 +73,52 @@ export default function BidDetailPage() {
 
   const st = bid ? (STATUS_MAP[bid.response_status] ?? { label: bid.response_status, variant: "default" as const }) : null;
   const canRespond = bid?.response_status === "pending";
+  const isUrgent = bid?.deadline && new Date(bid.deadline).getTime() - Date.now() < 172800000;
 
   return (
     <>
       <VendorNav />
       <main className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-        <div className="flex items-center gap-2">
-          <button onClick={() => router.back()} className="text-xs text-gray-400 hover:text-gray-600">← 목록</button>
-        </div>
+        <button
+          onClick={() => router.back()}
+          className="text-xs font-black text-black border-2 border-black px-3 py-1 hover:bg-black hover:text-white transition-colors"
+        >
+          ← 목록
+        </button>
 
         {error && <ErrorAlert message={error} />}
 
         {bid && (
           <>
             {/* 헤더 */}
-            <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-3">
+            <div className="bg-white border-2 border-black p-5 shadow-[4px_4px_0px_#000] space-y-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-base font-semibold text-gray-900">{bid.trade_type ?? "공종 미정"}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{bid.project_name ?? "프로젝트명 없음"}</p>
+                  <p className="text-base font-black text-black">{bid.trade_type ?? "공종 미정"}</p>
+                  <p className="text-xs font-medium text-gray-500 mt-0.5">{bid.project_name ?? "프로젝트명 없음"}</p>
                 </div>
                 {st && <Badge variant={st.variant}>{st.label}</Badge>}
               </div>
 
-              <div className="grid grid-cols-2 gap-3 pt-1">
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <p className="text-xs text-gray-500 mb-1">마감까지</p>
-                  <p className={`text-sm font-semibold ${bid.deadline && new Date(bid.deadline).getTime() - Date.now() < 172800000 ? "text-red-500" : "text-gray-800"}`}>
+              <div className="grid grid-cols-2 gap-3">
+                <div className={`border-2 p-3 ${isUrgent ? "bg-[#FF6B6B] border-black text-white" : "bg-[#F5F0E8] border-black"}`}>
+                  <p className="text-xs font-bold uppercase tracking-wide opacity-70 mb-1">마감까지</p>
+                  <p className="text-sm font-black">
                     <Countdown deadline={bid.deadline} />
                   </p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <p className="text-xs text-gray-500 mb-1">마감일</p>
-                  <p className="text-sm font-semibold text-gray-800">
+                <div className="bg-[#F5F0E8] border-2 border-black p-3">
+                  <p className="text-xs font-bold uppercase tracking-wide opacity-70 mb-1">마감일</p>
+                  <p className="text-sm font-black text-black">
                     {bid.deadline ? new Date(bid.deadline).toLocaleDateString("ko-KR") : "없음"}
                   </p>
                 </div>
               </div>
 
               {bid.bid_package?.instructions && (
-                <div className="pt-2">
-                  <p className="text-xs text-gray-500 mb-1">발주 지시사항</p>
-                  <p className="text-sm text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg p-3">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-wide text-gray-500 mb-2">발주 지시사항</p>
+                  <p className="text-sm font-medium text-black whitespace-pre-wrap bg-[#F5F0E8] border-2 border-black p-3">
                     {bid.bid_package.instructions}
                   </p>
                 </div>
@@ -127,21 +131,28 @@ export default function BidDetailPage() {
                 <button
                   onClick={() => respond("accepted")}
                   disabled={responding}
-                  className="flex-1 py-3 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                  className="flex-1 py-3 bg-[#4ADE80] text-black text-sm font-black border-2 border-black
+                    shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px]
+                    active:shadow-none active:translate-x-[4px] active:translate-y-[4px]
+                    disabled:opacity-50 transition-all uppercase tracking-wide"
                 >
                   참여하기
                 </button>
                 <button
                   onClick={() => setShowRejectForm(true)}
                   disabled={responding}
-                  className="px-4 py-3 rounded-xl border border-gray-200 text-gray-600 text-sm hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                  className="px-4 py-3 bg-white text-black text-sm font-black border-2 border-black
+                    shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px]
+                    active:shadow-none disabled:opacity-50 transition-all"
                 >
                   거절
                 </button>
                 <button
                   onClick={() => respond("on_hold")}
                   disabled={responding}
-                  className="px-4 py-3 rounded-xl border border-gray-200 text-gray-600 text-sm hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                  className="px-4 py-3 bg-[#FFE566] text-black text-sm font-black border-2 border-black
+                    shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px]
+                    active:shadow-none disabled:opacity-50 transition-all"
                 >
                   보류
                 </button>
@@ -149,26 +160,28 @@ export default function BidDetailPage() {
             )}
 
             {showRejectForm && (
-              <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
-                <p className="text-sm font-medium text-gray-700">거절 사유 (선택)</p>
+              <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000] space-y-3">
+                <p className="text-sm font-black text-black uppercase tracking-wide">거절 사유 (선택)</p>
                 <textarea
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                   placeholder="거절 사유를 입력하세요"
                   rows={3}
-                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border-2 border-black px-3 py-2 text-sm font-medium resize-none focus:outline-none focus:shadow-[4px_4px_0px_#000] transition-shadow"
                 />
                 <div className="flex gap-2">
                   <button
                     onClick={() => respond("rejected")}
                     disabled={responding}
-                    className="flex-1 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 disabled:opacity-50"
+                    className="flex-1 py-2 bg-[#FF6B6B] text-white text-sm font-black border-2 border-black
+                      shadow-[3px_3px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px]
+                      disabled:opacity-50 transition-all"
                   >
                     거절 확인
                   </button>
                   <button
                     onClick={() => setShowRejectForm(false)}
-                    className="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 text-sm hover:bg-gray-50"
+                    className="px-4 py-2 bg-white text-black text-sm font-black border-2 border-black hover:bg-[#F5F0E8] transition-colors"
                   >
                     취소
                   </button>
@@ -178,14 +191,16 @@ export default function BidDetailPage() {
 
             {/* 참여 후 견적 제출 링크 */}
             {bid.response_status === "accepted" && (
-              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-center justify-between">
+              <div className="bg-[#5B8DEF] border-2 border-black p-4 shadow-[4px_4px_0px_#000] flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-blue-800">참여 확정</p>
-                  <p className="text-xs text-blue-600 mt-0.5">견적서를 제출해주세요</p>
+                  <p className="text-sm font-black text-white">참여 확정</p>
+                  <p className="text-xs font-bold text-white/80 mt-0.5">견적서를 제출해주세요</p>
                 </div>
                 <Link
                   href={`/quotes/new/${bid.id}`}
-                  className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-white text-black text-sm font-black border-2 border-black
+                    shadow-[3px_3px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px]
+                    active:shadow-none transition-all"
                 >
                   견적 제출 →
                 </Link>

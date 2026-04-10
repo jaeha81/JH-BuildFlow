@@ -87,13 +87,16 @@ export default function QuoteNewPage() {
     <>
       <VendorNav />
       <main className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-        <div className="flex items-center gap-2">
-          <button onClick={() => router.back()} className="text-xs text-gray-400 hover:text-gray-600">← 뒤로</button>
-        </div>
+        <button
+          onClick={() => router.back()}
+          className="text-xs font-black text-black border-2 border-black px-3 py-1 hover:bg-black hover:text-white transition-colors"
+        >
+          ← 뒤로
+        </button>
 
         <div>
-          <h1 className="text-lg font-semibold text-gray-900">견적서 제출</h1>
-          {bid && <p className="text-xs text-gray-400 mt-0.5">{bid.trade_type ?? "공종 미정"} · {bid.project_name ?? "프로젝트"}</p>}
+          <h1 className="text-lg font-black text-black uppercase tracking-wide">견적서 제출</h1>
+          {bid && <p className="text-xs font-bold text-gray-500 mt-0.5">{bid.trade_type ?? "공종 미정"} · {bid.project_name ?? "프로젝트"}</p>}
         </div>
 
         {error && <ErrorAlert message={error} />}
@@ -108,25 +111,25 @@ export default function QuoteNewPage() {
             <button
               key={key}
               onClick={() => { setType(key); setFile(null); }}
-              className={`p-3 rounded-xl border text-left transition-colors ${
+              className={`p-3 border-2 text-left transition-all ${
                 type === key
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300"
+                  ? "border-black bg-[#5B8DEF] text-white shadow-[3px_3px_0px_#000]"
+                  : "border-black bg-white text-black hover:bg-[#F5F0E8]"
               }`}
             >
-              <p className={`text-sm font-medium ${type === key ? "text-blue-700" : "text-gray-700"}`}>{label}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
+              <p className="text-sm font-black">{label}</p>
+              <p className="text-xs font-medium mt-0.5 opacity-70">{desc}</p>
             </button>
           ))}
         </div>
 
         {/* 템플릿 직접 입력 */}
         {type === "template" && (
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="border-2 border-black shadow-[4px_4px_0px_#000] bg-white overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-50 text-xs text-gray-500">
+                  <tr className="bg-black text-xs text-white uppercase tracking-wide font-black">
                     <th className="text-left px-3 py-2 w-8">#</th>
                     <th className="text-left px-3 py-2">항목명</th>
                     <th className="text-left px-3 py-2 w-16">단위</th>
@@ -136,23 +139,23 @@ export default function QuoteNewPage() {
                     <th className="w-8"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y-2 divide-black/10">
                   {items.map((row, i) => (
-                    <tr key={i}>
-                      <td className="px-3 py-2 text-gray-400 text-xs">{i + 1}</td>
+                    <tr key={i} className="hover:bg-[#F5F0E8]">
+                      <td className="px-3 py-2 text-gray-400 text-xs font-bold">{i + 1}</td>
                       <td className="px-3 py-2">
                         <input
                           value={row.item_name}
                           onChange={(e) => updateItem(i, "item_name", e.target.value)}
                           placeholder="항목명"
-                          className="w-full border-0 focus:outline-none text-sm text-gray-800"
+                          className="w-full border-0 focus:outline-none text-sm font-medium text-black bg-transparent"
                         />
                       </td>
                       <td className="px-3 py-2">
                         <input
                           value={row.unit}
                           onChange={(e) => updateItem(i, "unit", e.target.value)}
-                          className="w-full border-0 focus:outline-none text-sm text-gray-600 text-center"
+                          className="w-full border-0 focus:outline-none text-sm font-medium text-black text-center bg-transparent"
                         />
                       </td>
                       <td className="px-3 py-2">
@@ -161,7 +164,7 @@ export default function QuoteNewPage() {
                           min="0"
                           value={row.quantity}
                           onChange={(e) => updateItem(i, "quantity", Number(e.target.value))}
-                          className="w-full border-0 focus:outline-none text-sm text-gray-800 text-right"
+                          className="w-full border-0 focus:outline-none text-sm font-medium text-black text-right bg-transparent"
                         />
                       </td>
                       <td className="px-3 py-2">
@@ -170,29 +173,35 @@ export default function QuoteNewPage() {
                           min="0"
                           value={row.unit_price}
                           onChange={(e) => updateItem(i, "unit_price", Number(e.target.value))}
-                          className="w-full border-0 focus:outline-none text-sm text-gray-800 text-right"
+                          className="w-full border-0 focus:outline-none text-sm font-medium text-black text-right bg-transparent"
                         />
                       </td>
-                      <td className="px-3 py-2 text-right text-sm text-gray-700">{row.amount.toLocaleString()}</td>
+                      <td className="px-3 py-2 text-right text-sm font-black text-black">{row.amount.toLocaleString()}</td>
                       <td className="px-2 py-2">
                         {items.length > 1 && (
-                          <button onClick={() => removeRow(i)} className="text-gray-300 hover:text-red-400 text-xs">✕</button>
+                          <button onClick={() => removeRow(i)} className="text-gray-300 hover:text-[#FF6B6B] text-xs font-black">✕</button>
                         )}
                       </td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="border-t border-gray-200 bg-gray-50">
-                    <td colSpan={5} className="px-3 py-2 text-xs font-medium text-gray-600 text-right">합계</td>
-                    <td className="px-3 py-2 text-right text-sm font-bold text-blue-700">{formatKRW(total)}</td>
+                  <tr className="border-t-2 border-black bg-[#F5F0E8]">
+                    <td colSpan={5} className="px-3 py-2 text-xs font-black text-black text-right uppercase tracking-wide">합계</td>
+                    <td className="px-3 py-2 text-right text-sm font-black text-[#5B8DEF]">{formatKRW(total)}</td>
                     <td></td>
                   </tr>
                 </tfoot>
               </table>
             </div>
-            <div className="px-3 py-2 border-t border-gray-100">
-              <button onClick={addRow} className="text-xs text-blue-600 hover:underline">+ 항목 추가</button>
+            <div className="px-3 py-2 border-t-2 border-black/10">
+              <button
+                onClick={addRow}
+                className="text-xs font-black text-[#5B8DEF] border-2 border-[#5B8DEF] px-2 py-0.5
+                  hover:bg-[#5B8DEF] hover:text-white transition-colors"
+              >
+                + 항목 추가
+              </button>
             </div>
           </div>
         )}
@@ -201,7 +210,8 @@ export default function QuoteNewPage() {
         {(type === "pdf" || type === "excel") && (
           <div
             onClick={() => fileRef.current?.click()}
-            className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer hover:border-blue-300 transition-colors"
+            className="border-2 border-dashed border-black p-8 text-center cursor-pointer
+              hover:bg-[#F5F0E8] shadow-[4px_4px_0px_#000] transition-colors"
           >
             <input
               ref={fileRef}
@@ -212,14 +222,14 @@ export default function QuoteNewPage() {
             />
             {file ? (
               <div>
-                <p className="text-sm font-medium text-gray-800">{file.name}</p>
-                <p className="text-xs text-gray-400 mt-1">{(file.size / 1024).toFixed(1)} KB</p>
+                <p className="text-sm font-black text-black">{file.name}</p>
+                <p className="text-xs font-bold text-gray-500 mt-1">{(file.size / 1024).toFixed(1)} KB</p>
               </div>
             ) : (
               <div>
                 <p className="text-2xl mb-2">{type === "pdf" ? "📄" : "📊"}</p>
-                <p className="text-sm text-gray-600">클릭하여 파일 선택</p>
-                <p className="text-xs text-gray-400 mt-1">{type === "pdf" ? "PDF 파일" : "Excel (.xlsx, .xls)"}</p>
+                <p className="text-sm font-black text-black">클릭하여 파일 선택</p>
+                <p className="text-xs font-bold text-gray-500 mt-1">{type === "pdf" ? "PDF 파일" : "Excel (.xlsx, .xls)"}</p>
               </div>
             )}
           </div>
@@ -228,7 +238,10 @@ export default function QuoteNewPage() {
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          className="w-full py-3 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          className="w-full py-3 bg-black text-white text-sm font-black uppercase tracking-wide border-2 border-black
+            shadow-[4px_4px_0px_rgba(0,0,0,0.3)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.3)] hover:translate-x-[2px] hover:translate-y-[2px]
+            active:shadow-none active:translate-x-[4px] active:translate-y-[4px]
+            disabled:opacity-50 transition-all"
         >
           {submitting ? "제출 중..." : "견적서 제출"}
         </button>

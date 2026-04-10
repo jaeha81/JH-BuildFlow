@@ -50,33 +50,33 @@ export function ProjectsPage() {
         />
       ) : (
         <div className="p-6">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+          <div className="bg-[#1A1D27] border-2 border-white/10 shadow-[4px_4px_0px_rgba(255,255,255,0.05)] overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-800 text-xs text-gray-500">
-                  <th className="text-left px-4 py-3">프로젝트명</th>
-                  <th className="text-left px-4 py-3">업종</th>
-                  <th className="text-left px-4 py-3">현장 주소</th>
-                  <th className="text-right px-4 py-3">계약금액</th>
-                  <th className="text-left px-4 py-3">상태</th>
-                  <th className="text-left px-4 py-3">시작일</th>
+                <tr className="border-b-2 border-white/10 text-xs text-gray-500 uppercase tracking-wide">
+                  <th className="text-left px-4 py-3 font-black">프로젝트명</th>
+                  <th className="text-left px-4 py-3 font-black">업종</th>
+                  <th className="text-left px-4 py-3 font-black">현장 주소</th>
+                  <th className="text-right px-4 py-3 font-black">계약금액</th>
+                  <th className="text-left px-4 py-3 font-black">상태</th>
+                  <th className="text-left px-4 py-3 font-black">시작일</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800">
+              <tbody className="divide-y-2 divide-white/5">
                 {projects.map((p) => {
                   const st = STATUS_LABEL[p.status] ?? { label: p.status, variant: "default" };
                   return (
                     <tr
                       key={p.id}
                       onClick={() => navigate(`/projects/${p.id}`)}
-                      className="hover:bg-gray-800 cursor-pointer transition-colors"
+                      className="hover:bg-white/5 cursor-pointer transition-colors"
                     >
-                      <td className="px-4 py-3 text-white font-medium">{p.name}</td>
+                      <td className="px-4 py-3 text-white font-bold">{p.name}</td>
                       <td className="px-4 py-3 text-gray-400">{p.industry_template ?? "—"}</td>
                       <td className="px-4 py-3 text-gray-400 max-w-[200px] truncate">
                         {p.site_address ?? "—"}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-300">
+                      <td className="px-4 py-3 text-right text-gray-300 font-bold">
                         {p.contract_amount
                           ? `${(p.contract_amount / 10000).toFixed(0)}만원`
                           : "—"}

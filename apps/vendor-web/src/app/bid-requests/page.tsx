@@ -41,14 +41,16 @@ export default function BidRequestsPage() {
       <VendorNav />
       <main className="max-w-3xl mx-auto px-4 py-8 space-y-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-semibold text-gray-900">발주 수신함</h1>
+          <h1 className="text-lg font-black text-black uppercase tracking-wide">발주 수신함</h1>
           <div className="flex gap-1">
             {(["all", "pending", "accepted"] as const).map((f) => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                  filter === f ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                className={`px-3 py-1 text-xs font-bold border-2 transition-all ${
+                  filter === f
+                    ? "bg-[#5B8DEF] text-white border-black shadow-[2px_2px_0px_#000]"
+                    : "bg-white text-black border-black hover:bg-[#F5F0E8]"
                 }`}
               >
                 {f === "all" ? "전체" : f === "pending" ? "대기 중" : "참여 중"}
@@ -62,9 +64,11 @@ export default function BidRequestsPage() {
         {loading ? (
           <LoadingSpinner />
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-gray-400 text-sm">수신된 발주가 없습니다</div>
+          <div className="text-center py-16 font-bold text-gray-500 text-sm border-2 border-black shadow-[4px_4px_0px_#000] bg-white">
+            수신된 발주가 없습니다
+          </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100">
+          <div className="border-2 border-black shadow-[4px_4px_0px_#000] bg-white divide-y-2 divide-black">
             {filtered.map((b) => {
               const st = STATUS_MAP[b.response_status] ?? { label: b.response_status, variant: "default" as const };
               const d = deadline(b.deadline);
@@ -73,14 +77,14 @@ export default function BidRequestsPage() {
                 <Link
                   key={b.id}
                   href={`/bid-requests/${b.id}`}
-                  className="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-between px-5 py-4 hover:bg-[#F5F0E8] transition-colors"
                 >
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-gray-800">{b.trade_type ?? "공종 미정"}</p>
-                    <p className="text-xs text-gray-400">{b.project_name ?? "프로젝트명 없음"}</p>
+                    <p className="text-sm font-black text-black">{b.trade_type ?? "공종 미정"}</p>
+                    <p className="text-xs font-medium text-gray-500">{b.project_name ?? "프로젝트명 없음"}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className={`text-xs font-medium ${isUrgent ? "text-red-500" : "text-gray-400"}`}>{d}</span>
+                    <span className={`text-xs font-black ${isUrgent ? "text-[#FF6B6B]" : "text-gray-400"}`}>{d}</span>
                     <Badge variant={st.variant}>{st.label}</Badge>
                   </div>
                 </Link>
