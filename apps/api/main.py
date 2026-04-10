@@ -4,7 +4,11 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
+from app.core.config import settings
+from app.core.limiter import limiter
 from app.routers import auth, health
 from app.routers.projects import router as projects_router
 from app.routers.vendors import router as vendors_router
@@ -40,7 +44,6 @@ async def _monthly_snapshot_job() -> None:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 매월 1일 02:00 스냅샷
     scheduler.add_job(
         _monthly_snapshot_job,
         CronTrigger(day=1, hour=2, minute=0),
@@ -60,9 +63,15 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Rate limiter 상태 주입 + 초과 핸들러
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# CORS — settings.ALLOWED_ORIGINS 파싱 (운영 시 실제 도메인만 허용)
+_origins = [o.strip() for o in settings.ALLOWED_ORIGINS.split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://localhost:5173"],
+    allow_origins=_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

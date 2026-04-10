@@ -12,7 +12,9 @@
     "build": "tsc -p tsconfig.main.json && vite build",
     "electron:build": "npm run build && electron-builder --config electron-builder.yml --win",
     "electron:build:portable": "npm run build && electron-builder --config electron-builder.yml --win --target portable",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@types/react-router-dom": "^5.3.3",
@@ -35,6 +37,7 @@
     "tailwindcss": "^3.4.4",
     "typescript": "^5.4.5",
     "vite": "^5.3.1",
+    "vitest": "^1.6.0",
     "wait-on": "^7.2.0"
   }
 }

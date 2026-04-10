@@ -9,6 +9,8 @@ from app.core.security import (
     decode_token,
     verify_password,
 )
+from app.core.limiter import limiter
+from app.core.security_log import log_login_failure, log_login_success
 from app.dependencies.auth import get_current_user
 from app.models.audit import AuditLog
 from app.models.base import new_uuid
@@ -19,23 +21,27 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/login", response_model=TokenResponse)
+@limiter.limit("10/minute")
 async def login(
-    body: LoginRequest,
     request: Request,
+    body: LoginRequest,
     db: AsyncSession = Depends(get_db),
 ) -> TokenResponse:
+    ip = request.client.host if request.client else None
     result = await db.execute(
         select(User).where(User.email == body.email, User.deleted_at.is_(None))
     )
     user = result.scalar_one_or_none()
 
     if not user or not verify_password(body.password, user.hashed_password):
+        log_login_failure(body.email, ip)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="이메일 또는 비밀번호가 올바르지 않습니다",
         )
 
     if not user.is_active:
+        log_login_failure(body.email, ip)
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="비활성화된 계정입니다",
@@ -48,7 +54,8 @@ async def login(
     )
     refresh_token = create_refresh_token(subject=user.id)
 
-    # Audit log
+    log_login_success(user.id, user.role, ip)
+
     db.add(
         AuditLog(
             id=new_uuid(),
@@ -58,10 +65,11 @@ async def login(
             action="auth.login",
             target_type="User",
             target_id=user.id,
-            ip_address=request.client.host if request.client else None,
+            ip_address=ip,
             user_agent=request.headers.get("user-agent"),
         )
     )
+    await db.commit()
 
     return TokenResponse(access_token=access_token, refresh_token=refresh_token)
 

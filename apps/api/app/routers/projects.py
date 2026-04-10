@@ -234,7 +234,11 @@ async def list_documents(
             ProjectDocument.deleted_at.is_(None),
         )
     )
-    return [DocumentResponse.model_validate(d) for d in result.scalars()]
+    docs = list(result.scalars())
+    # SECURITY: vendor_user는 is_internal=True 문서 접근 불가
+    if current_user.role == "vendor_user":
+        docs = [d for d in docs if not d.is_internal]
+    return [DocumentResponse.model_validate(d) for d in docs]
 
 
 @router.post(

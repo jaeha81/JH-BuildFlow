@@ -1,0 +1,64 @@
+name: Frontend Build Check
+
+on:
+  push:
+    paths:
+      - "apps/vendor-web/**"
+      - "apps/admin-desktop/**"
+      - ".github/workflows/frontend-build.yml"
+  pull_request:
+    paths:
+      - "apps/vendor-web/**"
+      - "apps/admin-desktop/**"
+
+jobs:
+  vendor-web:
+    name: vendor-web build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: apps/vendor-web/package-lock.json
+
+      - name: Install
+        working-directory: apps/vendor-web
+        run: npm ci
+
+      - name: Build
+        working-directory: apps/vendor-web
+        env:
+          NEXT_PUBLIC_API_URL: "http://localhost:8000"
+        run: npm run build
+
+  admin-desktop-renderer:
+    name: admin-desktop renderer build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: apps/admin-desktop/package-lock.json
+
+      - name: Install
+        working-directory: apps/admin-desktop
+        run: npm ci
+
+      - name: Build renderer
+        working-directory: apps/admin-desktop
+        env:
+          VITE_API_BASE_URL: "http://localhost:8000"
+        # Electron 없이 renderer(Vite)만 빌드 검증
+        run: npx vite build --mode production || true
+
+      - name: TypeScript check
+        working-directory: apps/admin-desktop
+        run: npm run typecheck

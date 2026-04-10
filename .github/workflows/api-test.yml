@@ -1,0 +1,41 @@
+name: API Tests
+
+on:
+  push:
+    paths:
+      - "apps/api/**"
+      - ".github/workflows/api-test.yml"
+  pull_request:
+    paths:
+      - "apps/api/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: apps/api/requirements-dev.txt
+
+      - name: Install dependencies
+        working-directory: apps/api
+        run: pip install -r requirements-dev.txt
+
+      - name: Run pytest
+        working-directory: apps/api
+        env:
+          DATABASE_URL: "sqlite+aiosqlite:///:memory:"
+          SECRET_KEY: "test-secret-key-minimum-32-characters-long"
+          ALLOWED_ORIGINS: "http://localhost:3000"
+        run: pytest --tb=short -q
+
+      - name: Type check (pyright optional)
+        working-directory: apps/api
+        run: echo "pyright 선택 사항 — 필요 시 추가"
+        continue-on-error: true

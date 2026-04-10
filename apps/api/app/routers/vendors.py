@@ -105,8 +105,8 @@ async def update_vendor(
     db: AsyncSession = Depends(get_db),
 ) -> VendorResponse:
     vendor = await _get_vendor_or_404(db, vendor_id, current_user.company_id)
-    # SECURITY: vendor 역할은 이메일이 일치하는 자신의 업체만 수정 가능
-    if current_user.role == "vendor" and vendor.email != current_user.email:
+    # SECURITY: vendor_user 역할은 이메일이 일치하는 자신의 업체만 수정 가능
+    if current_user.role == "vendor_user" and vendor.email != current_user.email:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="자신의 업체 정보만 수정할 수 있습니다.")
     before = VendorResponse.model_validate(vendor).model_dump()
     for field, val in body.model_dump(exclude_none=True).items():

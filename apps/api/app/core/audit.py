@@ -9,6 +9,19 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.audit import AuditLog
 from app.models.base import new_uuid
 
+# 감사 로그에서 마스킹할 민감 필드
+_SENSITIVE_FIELDS = {"phone", "business_no", "hashed_password", "password"}
+
+
+def _mask(data: dict[str, Any] | None) -> dict[str, Any] | None:
+    """민감 필드를 '***'으로 마스킹."""
+    if not data:
+        return data
+    return {
+        k: ("***" if k in _SENSITIVE_FIELDS else v)
+        for k, v in data.items()
+    }
+
 
 async def write_audit(
     db: AsyncSession,
@@ -32,8 +45,8 @@ async def write_audit(
             action=action,
             target_type=target_type,
             target_id=target_id,
-            before_json=before,
-            after_json=after,
+            before_json=_mask(before),
+            after_json=_mask(after),
             ip_address=request.client.host if request and request.client else None,
             user_agent=request.headers.get("user-agent") if request else None,
         )
