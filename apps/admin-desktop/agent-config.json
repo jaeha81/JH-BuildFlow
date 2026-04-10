@@ -1,0 +1,21 @@
+{
+  "watchRoot": "C:/Users/user/JH-BuildFlow-Watch",
+  "outputDir": "C:/Users/user/JH-BuildFlow-Packages",
+  "reportsDir": "C:/Users/user/JH-BuildFlow-Reports",
+  "ignoredExtensions": [".tmp", ".lock", ".lnk", ".db", ".DS_Store"],
+  "debounceMs": 500,
+  "_comment": "watchRoot 아래에 표준 폴더를 생성하고 파일을 넣으면 SCANNER가 감지합니다.",
+  "_standardFolders": [
+    "00_프로젝트기본정보",
+    "01_도면",
+    "02_공내역서_물량",
+    "03_공정일정",
+    "04_협력사발주자료",
+    "05_협력사견적서원본",
+    "06_표준화견적데이터",
+    "07_현장사진_이슈",
+    "08_정산_세무",
+    "09_완료보고",
+    "99_로그_감사기록"
+  ]
+}

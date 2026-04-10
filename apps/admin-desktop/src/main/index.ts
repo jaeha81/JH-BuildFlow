@@ -1,7 +1,17 @@
-import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 
+import { app, BrowserWindow } from "electron";
+
+import { Harness } from "../agent-engine/harness";
+
 const isDev = process.env.NODE_ENV === "development" || !app.isPackaged;
+
+// 데이터 디렉토리: 개발 시 프로젝트 루트, 배포 시 userData
+const dataDir = isDev
+  ? path.join(__dirname, "../../../.agent-data")
+  : path.join(app.getPath("userData"), "agent-data");
+
+let harness: Harness | null = null;
 
 function createWindow(): BrowserWindow {
   const win = new BrowserWindow({
@@ -33,6 +43,10 @@ function createWindow(): BrowserWindow {
 }
 
 app.whenReady().then(() => {
+  // Harness 초기화 및 시작
+  harness = new Harness(dataDir);
+  harness.start();
+
   createWindow();
 
   app.on("activate", () => {
@@ -43,6 +57,7 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
+  harness?.stop();
   if (process.platform !== "darwin") {
     app.quit();
   }

@@ -1,0 +1,26 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "api (FastAPI)",
+      "runtimeExecutable": "uvicorn",
+      "runtimeArgs": ["main:app", "--reload", "--port", "8000"],
+      "port": 8000,
+      "cwd": "apps/api"
+    },
+    {
+      "name": "vendor-web (Next.js)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000,
+      "cwd": "apps/vendor-web"
+    },
+    {
+      "name": "admin-desktop renderer (Vite)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:renderer"],
+      "port": 5173,
+      "cwd": "apps/admin-desktop"
+    }
+  ]
+}
