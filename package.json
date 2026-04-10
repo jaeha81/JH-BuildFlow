@@ -1,0 +1,19 @@
+{
+  "name": "interior-contractor-platform",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "api": "cd apps/api && uvicorn main:app --reload --port 8000",
+    "vendor-web": "cd apps/vendor-web && npm run dev",
+    "admin-desktop": "cd apps/admin-desktop && npm run dev",
+    "dev": "concurrently \"npm run api\" \"npm run vendor-web\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.3"
+  }
+}
