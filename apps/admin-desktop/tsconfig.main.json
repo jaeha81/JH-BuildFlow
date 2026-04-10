@@ -5,7 +5,9 @@
     "target": "ES2020",
     "outDir": "dist/main",
     "rootDir": "src",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "exactOptionalPropertyTypes": false,
+    "noUncheckedIndexedAccess": false
   },
   "include": ["src/main", "src/agent-engine", "src/shared"]
 }

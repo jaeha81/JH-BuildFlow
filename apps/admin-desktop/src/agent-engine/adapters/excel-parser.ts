@@ -29,10 +29,10 @@ export function parseExcel(filePath: string): ExcelParseResult {
       const sheet = workbook.Sheets[sheetName];
       if (!sheet) continue;
 
-      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, {
+      const rows = (XLSX.utils.sheet_to_json(sheet, {
         header: 1,
         defval: "",
-      }) as unknown[][];
+      }) as unknown) as unknown[][];
 
       const { items, total } = parseRows(rows);
       allItems.push(...items);

@@ -21,6 +21,7 @@
         "../../packages/shared-types/src/*"
       ]
     },
+    "exactOptionalPropertyTypes": false,
     "allowJs": true,
     "noEmit": true,
     "incremental": true,

@@ -1,6 +1,14 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+def _normalize_db_url(url: str, driver: str) -> str:
+    """Railway injects postgresql:// — convert to the correct asyncpg/psycopg2 scheme."""
+    for prefix in ("postgresql://", "postgres://"):
+        if url.startswith(prefix):
+            return driver + "://" + url[len(prefix):]
+    return url
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
@@ -22,6 +30,19 @@ class Settings(BaseSettings):
     # Storage
     STORAGE_BACKEND: str = "local"
     STORAGE_LOCAL_ROOT: str = "./uploads"
+
+    def model_post_init(self, __context: object) -> None:
+        # Normalize Railway-injected DATABASE_URL (postgresql:// → driver-prefixed)
+        object.__setattr__(
+            self,
+            "DATABASE_URL",
+            _normalize_db_url(self.DATABASE_URL, "postgresql+asyncpg"),
+        )
+        object.__setattr__(
+            self,
+            "DATABASE_SYNC_URL",
+            _normalize_db_url(self.DATABASE_SYNC_URL, "postgresql+psycopg2"),
+        )
 
 
 settings = Settings()

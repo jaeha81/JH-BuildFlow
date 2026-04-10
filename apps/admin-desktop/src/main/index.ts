@@ -24,7 +24,7 @@ function setupAutoUpdater(): void {
   autoUpdater.setFeedURL({ provider: "generic", url: updateUrl });
   autoUpdater.autoDownload = false;  // 수동 확인 후 다운로드
 
-  autoUpdater.on("update-available", (info) => {
+  autoUpdater.on("update-available", (info: unknown) => {
     mainWindow?.webContents.send("updater:update-available", info);
   });
 
@@ -32,15 +32,15 @@ function setupAutoUpdater(): void {
     // 조용히 무시
   });
 
-  autoUpdater.on("error", (_err) => {
+  autoUpdater.on("error", (_err: unknown) => {
     // 업데이트 오류는 앱 실행에 영향 없음 (조용히 실패)
   });
 
-  autoUpdater.on("download-progress", (progress) => {
+  autoUpdater.on("download-progress", (progress: unknown) => {
     mainWindow?.webContents.send("updater:download-progress", progress);
   });
 
-  autoUpdater.on("update-downloaded", (info) => {
+  autoUpdater.on("update-downloaded", (info: unknown) => {
     mainWindow?.webContents.send("updater:update-downloaded", info);
   });
 

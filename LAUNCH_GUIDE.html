@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JH BuildFlow — 실행 가이드</title>
+<style>
+  :root {
+    --bg: #0F1117;
+    --card: #1A1D27;
+    --blue: #5B8DEF;
+    --green: #4ADE80;
+    --yellow: #FFE566;
+    --red: #FF6B6B;
+    --white: #ffffff;
+    --muted: rgba(255,255,255,0.4);
+    --border: rgba(255,255,255,0.1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    padding: 32px 16px 64px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+
+  /* 헤더 */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .logo-box {
+    display: inline-block;
+    background: var(--blue);
+    color: #fff;
+    font-weight: 900;
+    font-size: 22px;
+    padding: 10px 28px;
+    border: 3px solid #fff;
+    box-shadow: 5px 5px 0 #fff;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .header p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* 앱 카드 */
+  .app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+  .app-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 28px 24px;
+    position: relative;
+    box-shadow: 4px 4px 0 rgba(255,255,255,0.06);
+  }
+  .app-card:hover {
+    border-color: var(--blue);
+    box-shadow: 4px 4px 0 var(--blue);
+  }
+  .app-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 16px;
+    border: 2px solid var(--border);
+  }
+  .app-title {
+    font-weight: 900;
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+  .app-subtitle {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 2px 8px;
+    border: 1px solid;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+  }
+  .badge-windows { color: var(--blue); border-color: var(--blue); background: rgba(91,141,239,0.1); }
+  .badge-web    { color: var(--green); border-color: var(--green); background: rgba(74,222,128,0.1); }
+  .badge-mobile { color: var(--yellow); border-color: var(--yellow); background: rgba(255,229,102,0.1); }
+
+  .step-list { list-style: none; }
+  .step-list li {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .step-list li:last-child { border-bottom: none; }
+  .step-num {
+    background: var(--blue);
+    color: #fff;
+    font-weight: 900;
+    font-size: 10px;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .download-btn {
+    display: block;
+    margin-top: 20px;
+    background: var(--blue);
+    color: #fff;
+    text-align: center;
+    font-weight: 900;
+    font-size: 13px;
+    padding: 10px;
+    border: 2px solid #fff;
+    box-shadow: 3px 3px 0 #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .download-btn:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #fff; }
+
+  .url-box {
+    margin-top: 16px;
+    background: rgba(91,141,239,0.1);
+    border: 1px solid var(--blue);
+    padding: 10px 14px;
+    font-family: monospace;
+    font-size: 13px;
+    color: var(--blue);
+    word-break: break-all;
+  }
+
+  /* 전체 실행 섹션 */
+  .section {
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 28px 24px;
+    margin-bottom: 24px;
+    box-shadow: 4px 4px 0 rgba(255,255,255,0.04);
+  }
+  .section-title {
+    font-weight: 900;
+    font-size: 15px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  pre {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--green);
+    overflow-x: auto;
+    margin-top: 12px;
+  }
+  .port-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  .port-table th, .port-table td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .port-table th { color: var(--muted); font-weight: 700; font-size: 11px; letter-spacing: 1px; }
+  .port-table td code {
+    background: rgba(91,141,239,0.15);
+    color: var(--blue);
+    padding: 2px 6px;
+    font-family: monospace;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="logo-box">JH BuildFlow</div>
+    <p>인테리어 시공 관리 플랫폼 — 실행 가이드 v0.2.0</p>
+  </div>
+
+  <!-- 3개 앱 카드 -->
+  <div class="app-grid">
+
+    <!-- 1. 관리자 데스크탑 (Windows) -->
+    <div class="app-card">
+      <div class="app-icon" style="background:rgba(91,141,239,0.15);">🖥️</div>
+      <div class="badge badge-windows">WINDOWS EXE</div>
+      <div class="app-title">관리자 데스크탑</div>
+      <div class="app-subtitle">프로젝트 관리 · 발주 · AI 에이전트</div>
+      <ul class="step-list">
+        <li>
+          <span class="step-num">1</span>
+          아래 파일 중 하나를 다운로드하세요
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <b>설치형</b>: installer.exe 실행 → 자동 설치 후 바탕화면 아이콘
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <b>포터블</b>: portable.exe 바로 실행 (설치 불필요)
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          앱 실행 후 관리자 계정으로 로그인
+        </li>
+      </ul>
+      <a class="download-btn" href="apps/admin-desktop/dist/JH-BuildFlow-Admin-0.2.0-installer.exe" download>
+        ⬇ 설치형 다운로드 (installer.exe)
+      </a>
+      <a class="download-btn" href="apps/admin-desktop/dist/portable.exe" download style="margin-top:8px;background:#1A1D27;border-color:rgba(255,255,255,0.3);box-shadow:3px 3px 0 rgba(255,255,255,0.3);">
+        ⬇ 포터블 다운로드 (portable.exe)
+      </a>
+    </div>
+
+    <!-- 2. 협력사 포털 (웹) -->
+    <div class="app-card">
+      <div class="app-icon" style="background:rgba(74,222,128,0.15);">🌐</div>
+      <div class="badge badge-web">WEB — 외부 접속</div>
+      <div class="app-title">협력사 포털</div>
+      <div class="app-subtitle">발주 수신 · 견적 제출 · Q&A</div>
+      <ul class="step-list">
+        <li>
+          <span class="step-num">1</span>
+          서버에서 <code>npm run vendor-web</code> 실행
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          브라우저에서 아래 주소 접속
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          협력사 계정으로 로그인 (이메일 초대 필요)
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          외부 접속 시 공인 IP 또는 도메인 연결 필요
+        </li>
+      </ul>
+      <div class="url-box">http://localhost:3000</div>
+      <div class="url-box">http://100.88.158.108:3000 (로컬 네트워크)</div>
+    </div>
+
+    <!-- 3. 관리자 모바일 -->
+    <div class="app-card">
+      <div class="app-icon" style="background:rgba(255,229,102,0.15);">📱</div>
+      <div class="badge badge-mobile">MOBILE WEB — PWA</div>
+      <div class="app-title">관리자 모바일</div>
+      <div class="app-subtitle">발주 확인 · 정산 승인 · 협력사 관리</div>
+      <ul class="step-list">
+        <li>
+          <span class="step-num">1</span>
+          서버에서 <code>npm run admin-web</code> 실행
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          같은 Wi-Fi의 스마트폰에서 아래 주소 접속
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          관리자 계정으로 로그인
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          Chrome "홈 화면에 추가"로 앱처럼 사용 가능
+        </li>
+      </ul>
+      <div class="url-box">http://localhost:3001</div>
+      <div class="url-box">http://100.88.158.108:3001 (스마트폰 접속)</div>
+    </div>
+
+  </div>
+
+  <!-- 전체 한 번에 실행 -->
+  <div class="section">
+    <div class="section-title">🚀 전체 서비스 한 번에 실행</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:4px;">프로젝트 루트에서 아래 명령어 1개로 API + 협력사 포털 + 관리자 모바일 동시 시작</p>
+    <pre>cd "D:\ai프로젝트\JH BuildFlow"
+npm run dev</pre>
+    <p style="font-size:12px;color:var(--muted);margin-top:12px;">※ Python 3.11+ 및 Node.js 18+ 필요. 처음 실행 시 <code style="color:var(--blue)">npm install</code> 먼저 실행</p>
+  </div>
+
+  <!-- 포트 요약 -->
+  <div class="section">
+    <div class="section-title">📡 포트 및 역할 요약</div>
+    <table class="port-table">
+      <thead>
+        <tr>
+          <th>서비스</th>
+          <th>포트</th>
+          <th>접속 주소</th>
+          <th>대상</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>API 서버 (FastAPI)</td>
+          <td><code>8000</code></td>
+          <td><code>http://localhost:8000</code></td>
+          <td>내부 전용</td>
+        </tr>
+        <tr>
+          <td>협력사 포털 (vendor-web)</td>
+          <td><code>3000</code></td>
+          <td><code>http://[IP]:3000</code></td>
+          <td>외부 협력사</td>
+        </tr>
+        <tr>
+          <td>관리자 모바일 (admin-web)</td>
+          <td><code>3001</code></td>
+          <td><code>http://[IP]:3001</code></td>
+          <td>관리자 (모바일)</td>
+        </tr>
+        <tr>
+          <td>관리자 데스크탑 (Electron)</td>
+          <td>exe 실행</td>
+          <td>설치 후 바로 실행</td>
+          <td>관리자 (PC)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- API 서버 실행 -->
+  <div class="section">
+    <div class="section-title">⚙️ API 서버 개별 실행 (선택)</div>
+    <pre>cd "D:\ai프로젝트\JH BuildFlow\apps\api"
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000</pre>
+    <p style="font-size:12px;color:var(--muted);margin-top:10px;">API 문서: <span style="color:var(--blue)">http://localhost:8000/docs</span></p>
+  </div>
+
+  <!-- 데스크탑 개발모드 -->
+  <div class="section">
+    <div class="section-title">🔧 관리자 데스크탑 개발 모드 실행</div>
+    <pre>cd "D:\ai프로젝트\JH BuildFlow\apps\admin-desktop"
+npm run electron:dev</pre>
+    <p style="font-size:12px;color:var(--muted);margin-top:10px;">Vite 렌더러(5173) + TypeScript 빌드 + Electron 동시 실행</p>
+  </div>
+
+  <!-- 다시 빌드 -->
+  <div class="section">
+    <div class="section-title">📦 exe 다시 빌드</div>
+    <pre># 포터블 (설치 불필요)
+cd "D:\ai프로젝트\JH BuildFlow\apps\admin-desktop"
+npm run build
+npx electron-builder --win portable --x64
+
+# 설치형 (바탕화면 아이콘 자동 생성)
+npx electron-builder --win nsis --x64</pre>
+    <p style="font-size:12px;color:var(--muted);margin-top:10px;">출력 위치: <span style="color:var(--blue)">apps/admin-desktop/dist/</span></p>
+  </div>
+
+  <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:32px;">JH BuildFlow v0.2.0 &nbsp;·&nbsp; 2026</p>
+</div>
+</body>
+</html>

@@ -5,6 +5,8 @@
  * 향후 HWP 파서 라이브러리 연동 시 이 모듈만 교체.
  */
 
+import type { ParseResult, QuoteParser } from "./quote-parser-interface";
+
 export type HwpStubResult = {
   success: false;
   manualReviewRequired: true;
@@ -21,4 +23,16 @@ export function parseHwp(filePath: string): HwpStubResult {
 
 export function isHwpFile(filePath: string): boolean {
   return filePath.toLowerCase().endsWith(".hwp") || filePath.toLowerCase().endsWith(".hwpx");
+}
+
+/** QuoteParser 인터페이스를 구현한 HWP stub 파서 */
+export class HwpStubParser implements QuoteParser {
+  readonly supportedExtensions = ["hwp", "hwpx"];
+
+  async parse(filePath: string): Promise<ParseResult> {
+    return {
+      success: false,
+      error: `HWP 파일 자동 파싱 미지원 — 수동 검토 필요: ${filePath}`,
+    };
+  }
 }

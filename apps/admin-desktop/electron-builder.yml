@@ -1,8 +1,9 @@
 # electron-builder 설정 — PROMPT-12
 # 화이트라벨: APP_PRODUCT_NAME 환경변수로 appId/productName 오버라이드 가능
 
-appId: "${env.APP_ID:-com.jh.contractor-platform}"
-productName: "${env.APP_PRODUCT_NAME:-JH BuildFlow 관리자}"
+appId: "com.jh.contractor-platform"
+productName: "JH BuildFlow 관리자"
+electronVersion: "31.7.7"
 
 # 빌드 입력/출력
 directories:
@@ -30,25 +31,21 @@ win:
       arch: x64
     - target: portable
       arch: x64
+  executableName: "JH-BuildFlow-Admin"
   # 코드 서명: 개발 단계 비활성
   # certificateFile: ${env.WIN_CERT_FILE}
   # certificatePassword: ${env.WIN_CERT_PASSWORD}
 
 # NSIS 설치형
 nsis:
-  oneClick: false
-  allowDirChange: true
+  oneClick: true
   createDesktopShortcut: true
   createStartMenuShortcut: true
-  installerIcon: assets/icon.png
-  uninstallerIcon: assets/icon.png
-  shortcutName: "${env.APP_PRODUCT_NAME:-JH BuildFlow 관리자}"
-  installerHeaderIcon: assets/icon.png
-  license: ""
+  shortcutName: "JH BuildFlow 관리자"
 
 # 포터블 (설치 없이 실행)
 portable:
   artifactName: "portable.exe"
 
-# NSIS 출력 파일명
-artifactName: "setup.exe"
+# 출력 파일명
+artifactName: "JH-BuildFlow-Admin-${version}-installer.exe"

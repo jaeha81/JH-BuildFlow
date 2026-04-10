@@ -4,12 +4,16 @@ on:
   push:
     paths:
       - "apps/vendor-web/**"
+      - "apps/admin-web/**"
       - "apps/admin-desktop/**"
+      - "packages/**"
       - ".github/workflows/frontend-build.yml"
   pull_request:
     paths:
       - "apps/vendor-web/**"
+      - "apps/admin-web/**"
       - "apps/admin-desktop/**"
+      - "packages/**"
 
 jobs:
   vendor-web:
@@ -23,14 +27,33 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: apps/vendor-web/package-lock.json
 
-      - name: Install
-        working-directory: apps/vendor-web
+      - name: Install (root workspace)
         run: npm ci
 
       - name: Build
         working-directory: apps/vendor-web
+        env:
+          NEXT_PUBLIC_API_URL: "http://localhost:8000"
+        run: npm run build
+
+  admin-web:
+    name: admin-web build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install (root workspace)
+        run: npm ci
+
+      - name: Build
+        working-directory: apps/admin-web
         env:
           NEXT_PUBLIC_API_URL: "http://localhost:8000"
         run: npm run build
@@ -46,7 +69,6 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: apps/admin-desktop/package-lock.json
 
       - name: Install
         working-directory: apps/admin-desktop

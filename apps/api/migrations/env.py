@@ -15,11 +15,14 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Override DATABASE_URL from env (asyncpg → psycopg2 for sync alembic)
+# Override DATABASE_URL from env (asyncpg/raw → psycopg2 for sync alembic)
 db_url = os.getenv("DATABASE_URL") or os.getenv("DATABASE_SYNC_URL")
 if db_url:
-    if "asyncpg" in db_url:
-        db_url = db_url.replace("postgresql+asyncpg", "postgresql+psycopg2", 1)
+    # Railway injects postgresql:// or postgres:// — normalize to psycopg2 scheme
+    for raw_prefix in ("postgresql+asyncpg://", "postgresql://", "postgres://"):
+        if db_url.startswith(raw_prefix):
+            db_url = "postgresql+psycopg2://" + db_url[len(raw_prefix):]
+            break
     config.set_main_option("sqlalchemy.url", db_url)
 
 # Import all models so autogenerate can detect them

@@ -34,7 +34,7 @@ export async function runQuotePipeline(
   filePath: string,
   contextHint: Record<string, string> = {},
 ): Promise<PipelineResult> {
-  const ext = path.extname(filePath).lstrip?.(".") ?? filePath.split(".").pop()?.toLowerCase() ?? "";
+  const ext = (path.extname(filePath).replace(/^\./, "") || filePath.split(".").pop() || "").toLowerCase();
 
   const parser = PARSERS.find((p) => p.supportedExtensions.includes(ext));
   if (!parser) {
@@ -62,7 +62,7 @@ export async function runQuotePipeline(
       requiresManualReview: true,
       autoSave: false,
       warnings: [],
-      error: result.error,
+      ...(result.error !== undefined ? { error: result.error } : {}),
     };
   }
 

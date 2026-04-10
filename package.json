@@ -11,7 +11,7 @@
     "vendor-web": "cd apps/vendor-web && npm run dev",
     "admin-desktop": "cd apps/admin-desktop && npm run dev",
     "admin-web": "cd apps/admin-web && npm run dev",
-    "dev": "concurrently \"npm run api\" \"npm run vendor-web\" \"npm run admin-web\""
+    "dev": "concurrently \"npm run api\" \"npm run vendor-web\" \"npm run admin-web\" --names \"api,vendor,admin\" --prefix-colors \"cyan,green,blue\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

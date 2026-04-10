@@ -13,7 +13,8 @@ export class PdfQuoteParser implements QuoteParser {
   async parse(filePath: string, contextHint: Record<string, string> = {}): Promise<ParseResult> {
     try {
       // pdfjs-dist dynamic import (Electron/Node 환경)
-      const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.js");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-var-requires
+      const pdfjsLib: any = require("pdfjs-dist");
       const doc = await pdfjsLib.getDocument({ url: `file://${filePath}` }).promise;
 
       let fullText = "";
