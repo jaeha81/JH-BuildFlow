@@ -13,8 +13,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@types/react-router-dom": "^5.3.3",
     "chokidar": "^3.6.0",
     "pdfjs-dist": "^4.2.67",
+    "react-router-dom": "^6.30.3",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
@@ -39,7 +41,10 @@
       "output": "release"
     },
     "win": {
-      "target": ["nsis", "portable"]
+      "target": [
+        "nsis",
+        "portable"
+      ]
     }
   }
 }
