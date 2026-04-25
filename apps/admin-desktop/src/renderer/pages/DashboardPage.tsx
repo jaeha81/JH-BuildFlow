@@ -53,7 +53,7 @@ export function DashboardPage() {
           {/* 요약 카드 — 네오브루탈 컬러 그리드 */}
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
             {summaryCards.map((card, idx) => {
-              const c = ACCENT_COLORS[idx % ACCENT_COLORS.length];
+              const c = ACCENT_COLORS[idx % ACCENT_COLORS.length]!;
               return (
                 <div
                   key={card.title}

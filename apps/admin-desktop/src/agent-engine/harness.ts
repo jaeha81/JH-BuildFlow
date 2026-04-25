@@ -216,8 +216,8 @@ export class Harness {
         ])
       ) as import("./connector/harness-connector").HarnessStatus["agents"],
       pendingCount: this.pendingFiles.length,
-      lastWaveId: state.wave.waveId || undefined,
-      lastWaveStatus: state.wave.status === "idle" ? undefined : state.wave.status,
+      ...(state.wave.waveId ? { lastWaveId: state.wave.waveId } : {}),
+      ...(state.wave.status !== "idle" ? { lastWaveStatus: state.wave.status as "running" | "completed" | "failed" } : {}),
     };
   }
 

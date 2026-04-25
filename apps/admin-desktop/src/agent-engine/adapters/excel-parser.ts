@@ -69,13 +69,13 @@ function parseRows(rows: unknown[][]): { items: LineItem[]; total: number | null
   let nameCol = -1;
   let unitCol = -1;
 
-  const HEADER_KEYWORDS: Record<string, string[]> = {
+  const HEADER_KEYWORDS = {
     name: ["공종", "항목", "내역", "품명", "공사명"],
     unit: ["단위", "규격"],
     qty: ["수량", "물량"],
     unitPrice: ["단가", "단위가격"],
     amount: ["금액", "합계", "소계"],
-  };
+  } as const;
 
   for (let i = 0; i < Math.min(rows.length, 20); i++) {
     const row = rows[i];

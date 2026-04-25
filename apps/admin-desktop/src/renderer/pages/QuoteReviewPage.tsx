@@ -7,26 +7,10 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { quotesApi } from "../lib/api";
+import { quotesApi, type QuoteDetail } from "../lib/api";
 import { Button, ErrorAlert, LoadingSpinner, PageHeader } from "../components/ui";
 
-interface LineItem {
-  item_name: string;
-  unit: string;
-  quantity: number;
-  unit_price: number;
-  amount: number;
-}
-
-interface QuoteDetail {
-  id: string;
-  file_url: string | null;
-  file_name: string | null;
-  parsed_total: number | null;
-  parse_status: string;
-  submission_type: string;
-  line_items_json: LineItem[];
-}
+type LineItem = NonNullable<QuoteDetail["line_items_json"]>[number];
 
 export function QuoteReviewPage() {
   const { id } = useParams<{ id: string }>();
@@ -39,7 +23,7 @@ export function QuoteReviewPage() {
 
   useEffect(() => {
     if (!id) return;
-    quotesApi.get(id).then((q: QuoteDetail) => {
+    quotesApi.get(id).then((q) => {
       setQuote(q);
       setItems(q.line_items_json?.length ? q.line_items_json : [{ item_name: "", unit: "식", quantity: 1, unit_price: 0, amount: 0 }]);
     }).catch(() => setError("견적 정보를 불러오지 못했습니다.")).finally(() => setLoading(false));

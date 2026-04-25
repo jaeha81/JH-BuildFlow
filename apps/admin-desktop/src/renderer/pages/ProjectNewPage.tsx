@@ -52,17 +52,20 @@ export function ProjectNewPage() {
     setError("");
     setLoading(true);
     try {
-      const project = await projectsApi.create({
-        name: form.name,
-        site_address: form.site_address || undefined,
-        client_name: form.client_name || undefined,
-        industry_template: form.industry_template || undefined,
-        contract_amount: form.contract_amount ? Number(form.contract_amount) : undefined,
-        estimated_budget: form.estimated_budget ? Number(form.estimated_budget) : undefined,
-        start_date: form.start_date || undefined,
-        end_date: form.end_date || undefined,
-        notes: form.notes || undefined,
-      });
+      const body = Object.fromEntries(
+        Object.entries({
+          name: form.name,
+          site_address: form.site_address || undefined,
+          client_name: form.client_name || undefined,
+          industry_template: form.industry_template || undefined,
+          contract_amount: form.contract_amount ? Number(form.contract_amount) : undefined,
+          estimated_budget: form.estimated_budget ? Number(form.estimated_budget) : undefined,
+          start_date: form.start_date || undefined,
+          end_date: form.end_date || undefined,
+          notes: form.notes || undefined,
+        }).filter(([, v]) => v !== undefined)
+      ) as Parameters<typeof projectsApi.create>[0];
+      const project = await projectsApi.create(body);
       navigate(`/projects/${project.id}`);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "프로젝트 생성에 실패했습니다.");

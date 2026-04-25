@@ -94,7 +94,7 @@ function _extractTotal(lines: string[], lineItems: ReturnType<typeof _extractLin
     if (TOTAL_KEYWORDS.some((k) => lowerLine.includes(k))) {
       const nums = line.match(/[\d,]+/g);
       if (nums) {
-        const candidate = parseInt(nums[nums.length - 1].replace(/,/g, ""), 10);
+        const candidate = parseInt((nums.at(-1) ?? "0").replace(/,/g, ""), 10);
         if (candidate > 0) return candidate;
       }
     }
@@ -104,7 +104,7 @@ function _extractTotal(lines: string[], lineItems: ReturnType<typeof _extractLin
 
 function _extractField(text: string, re: RegExp): string {
   const match = text.match(re);
-  return match ? match[1].trim() : "";
+  return match ? (match[1] ?? "").trim() : "";
 }
 
 function _computeConfidence(

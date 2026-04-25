@@ -4,13 +4,13 @@
  */
 import type { NormalizedLineItem, NormalizedQuote, ParseResult, QuoteParser } from "./quote-parser-interface";
 
-const HEADER_ALIASES: Record<string, string[]> = {
+const HEADER_ALIASES = {
   item_name: ["항목명", "공사명", "품명", "내역", "item", "description"],
   unit: ["단위", "unit"],
   quantity: ["수량", "qty", "quantity"],
   unit_price: ["단가", "unit price", "unit_price", "단가(원)"],
   amount: ["금액", "합계", "amount", "소계", "금액(원)"],
-};
+} as const;
 
 export class ExcelQuoteParser implements QuoteParser {
   readonly supportedExtensions = ["xlsx", "xls"];
@@ -19,7 +19,7 @@ export class ExcelQuoteParser implements QuoteParser {
     try {
       const xlsx = await import("xlsx");
       const wb = xlsx.readFile(filePath);
-      const ws = wb.Sheets[wb.SheetNames[0]];
+      const ws = wb.Sheets[wb.SheetNames[0]!]!;
       const rows: unknown[][] = xlsx.utils.sheet_to_json(ws, { header: 1, defval: "" }) as unknown[][];
 
       if (rows.length < 2) {
@@ -35,7 +35,7 @@ export class ExcelQuoteParser implements QuoteParser {
         };
       }
 
-      const headerRow = rows[headerRowIdx].map((h) => String(h ?? "").toLowerCase().trim());
+      const headerRow = (rows[headerRowIdx] ?? []).map((h) => String(h ?? "").toLowerCase().trim());
       const colMap = _mapColumns(headerRow);
 
       const failedFields = Object.entries(colMap)
@@ -46,17 +46,17 @@ export class ExcelQuoteParser implements QuoteParser {
       let total = 0;
 
       for (let r = headerRowIdx + 1; r < rows.length; r++) {
-        const row = rows[r];
-        const itemName = String(row[colMap.item_name] ?? "").trim();
+        const row = rows[r] ?? [];
+        const itemName = String(row.at(colMap.item_name) ?? "").trim();
         if (!itemName) continue;
 
-        const qty = _toNum(row[colMap.quantity]);
-        const price = _toNum(row[colMap.unit_price]);
-        const amt = colMap.amount >= 0 ? _toNum(row[colMap.amount]) : qty * price;
+        const qty = _toNum(row.at(colMap.quantity));
+        const price = _toNum(row.at(colMap.unit_price));
+        const amt = colMap.amount >= 0 ? _toNum(row.at(colMap.amount)) : qty * price;
 
         lineItems.push({
           item_name: itemName,
-          unit: colMap.unit >= 0 ? String(row[colMap.unit] ?? "식") : "식",
+          unit: colMap.unit >= 0 ? String(row.at(colMap.unit) ?? "식") : "식",
           quantity: qty,
           unit_price: price,
           amount: amt,
@@ -93,20 +93,24 @@ export class ExcelQuoteParser implements QuoteParser {
 
 function _findHeaderRow(rows: unknown[][]): number {
   for (let i = 0; i < Math.min(10, rows.length); i++) {
-    const row = rows[i].map((c) => String(c ?? "").toLowerCase());
+    const row = (rows[i] ?? []).map((c) => String(c ?? "").toLowerCase());
     const matched = HEADER_ALIASES.item_name.some((alias) => row.some((c) => c.includes(alias)));
     if (matched) return i;
   }
   return -1;
 }
 
-function _mapColumns(header: string[]): Record<string, number> {
-  const result: Record<string, number> = {};
-  for (const [field, aliases] of Object.entries(HEADER_ALIASES)) {
-    const idx = header.findIndex((h) => aliases.some((a) => h.includes(a)));
-    result[field] = idx;
-  }
-  return result;
+type ColMap = { item_name: number; unit: number; quantity: number; unit_price: number; amount: number };
+
+function _mapColumns(header: string[]): ColMap {
+  const get = (aliases: readonly string[]) => header.findIndex((h) => aliases.some((a) => h.includes(a)));
+  return {
+    item_name: get(HEADER_ALIASES.item_name),
+    unit: get(HEADER_ALIASES.unit),
+    quantity: get(HEADER_ALIASES.quantity),
+    unit_price: get(HEADER_ALIASES.unit_price),
+    amount: get(HEADER_ALIASES.amount),
+  };
 }
 
 function _toNum(val: unknown): number {
